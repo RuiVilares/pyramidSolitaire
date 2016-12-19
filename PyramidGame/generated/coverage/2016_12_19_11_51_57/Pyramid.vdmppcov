@@ -1,0 +1,31 @@
+class Pyramid
+types
+	cardNumber = nat1
+	   inv n == n <= 52;
+values
+-- TODO Define values here
+instance variables
+	private pyramid: seq of seq of cardNumber := [];
+	private cards: seq of cardNumber := [];
+	
+	-- Teste
+	-- t: int := new MATH().rand(100);
+	
+operations
+
+public createDeck() ==
+(
+	cards := [ i | i in set {1, ..., 52}]
+);
+
+public test() ==
+(
+	createDeck();
+	IO`print(self); 
+);
+	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Pyramid
