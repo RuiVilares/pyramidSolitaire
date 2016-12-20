@@ -7,9 +7,8 @@ values
 instance variables
 	private pyramid: seq of seq of cardNumber := [];
 	private cards: seq of cardNumber := [];
+	private setExample: set of nat := {1,2,3,7};
 	
-	-- Teste
-	-- t: int := new MATH().rand(100);
 	
 operations
 
@@ -18,6 +17,28 @@ public createDeck() ==
 	cards := [ i | i in set {1, ..., 52}]
 );
 
+-- Pesquisar se existem as condições necessárias para o jogo continuar
+--	- Existir jogadas válias
+public continueGame: () ==> bool
+	continueGame() == (		
+		dcl sumCombination : nat := 0;
+		IO`print(power setExample); -- listas das combinações possiveis
+	
+		-- Combina os elementos da lista exemplo e soma cada sublista
+		for all value in set power setExample
+			do ( 
+					IO`print("\nCombinação possível: "); 
+					IO`print(value);
+					IO`print(", Soma: "); 
+				  sumCombination := SumSet(value);
+					IO`print(sumCombination);
+					
+					if sumCombination >= 13
+						then return true;
+				 );
+			return false;
+	);
+
 public test() ==
 (
 	createDeck();
@@ -25,7 +46,18 @@ public test() ==
 );
 	
 functions
--- TODO Define functiones here
+
+-- Sum Set from structure to single value
+-- http://kurser.iha.dk/eit/tivdm1/Quick_Overview_of_VDM_Operators.pdf
+public SumSet: set of nat -> nat
+	SumSet(s) == (
+		if s = {}
+			then 0
+		else let e in set s
+					in
+						e + SumSet(s\{e})
+	)
+
 traces
 -- TODO Define Combinatorial Test Traces here
 end Pyramid
