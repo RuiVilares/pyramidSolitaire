@@ -1,21 +1,101 @@
 class Pyramid
 types
-	cardNumber = nat1
+	public CardNumber = nat1
 	   inv n == n <= 52;
+	public DeckType = seq of nat1;
 values
 -- TODO Define values here
 instance variables
-	private pyramid: seq of seq of cardNumber := [];
-	private cards: seq of cardNumber := [];
-	private setExample: set of nat := {1,2,3,7};
+	public deck: seq of CardNumber := [];
+	public pyramidDeck: seq of seq of CardNumber := [];
+	public auxDeck: seq of CardNumber := [];
+	
+	private static setExample: set of nat := {};
 	
 	
 operations
 
+
+public test() ==
+(	
+	createDeck();
+	createPyramidDeck();
+	--IO`print(self); 
+);
+
 public createDeck() ==
 (
-	cards := [ i | i in set {1, ..., 52}]
+	deck := [ i | i in set {1, ..., 52}];
+	
+);	
+-- aceder
+/*	for counter = 1 to 3
+		do (
+			for counter2 = 1 to counter 
+				do (		
+						IO`print(pyramidDeck(counter)(counter2));
+						);
+			IO`print("\n");
+			);
+*/				
+-- introduzir
+/*	for counter = 1 to 3
+		do (
+				deck := [counter] ^ deck;
+			);
+			
+	for counter = 1 to 3
+		do (
+				IO`print(deck(counter));
+			);
+	*/	
+
+
+public createPyramidDeck() ==
+(	
+	for counter = 0 to 6
+		do (
+			dcl aux : seq of nat1 := [];
+			for counter2 = 0 to counter 
+				do (
+						dcl value: nat1 := getCard(deck);
+						aux := [value] ^ aux;
+									
+						);
+				pyramidDeck := pyramidDeck ^ [aux];
+			);
+			printPyramid();
+			
+			getAuxCard();
+			printAuxCards();
+			
+			
+		--	IO`print(getPoints(24));
 );
+
+
+public getAuxCard() ==
+(	
+	dcl value: nat1 := getCard(deck);
+	auxDeck := [value] ^ auxDeck;
+);
+
+public getCard: (DeckType) ==> nat1
+	getCard(deckToGet) == (
+		dcl position: nat1 := new MATH().rand(len deckToGet) + 1;
+		dcl value: nat1 := 1;
+		value := deckToGet(position);
+		deck := removeCard(deckToGet, position);
+		return value;
+);
+	
+public removeCard: DeckType * nat1 ==> DeckType
+	removeCard(deckToRemove, position) == (
+		dcl subDeck1 : seq of nat1 := deckToRemove(1, ... , position - 1);
+		dcl subDeck2 : seq of nat1 := deckToRemove(position + 1, ... , len deck);
+		return subDeck1 ^ subDeck2;
+	);
+
 
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
@@ -39,11 +119,89 @@ public continueGame: () ==> bool
 			return false;
 	);
 
-public test() ==
-(
-	createDeck();
-	IO`print(self); 
+
+public printPyramid: () ==> ()
+	printPyramid() == (
+		for counter = 1 to 7
+			do (
+				for counter2 = 1 to counter 
+					do (		
+							IO`print(convertNumberToSuit(pyramidDeck(counter)(counter2)));
+							IO`print(" ");
+							);
+				IO`print("\n");
+			);
 );
+
+public printAuxCards: () ==> ()
+	printAuxCards() == (
+		dcl numCardToPrint: nat := 0;
+		if len auxDeck >= 2
+			then numCardToPrint := 2
+		else 
+			numCardToPrint := len auxDeck;
+		
+		for counter = 1 to numCardToPrint		
+			do (
+				IO`print(convertNumberToSuit(auxDeck(counter)));
+				IO`print(" ");
+			);
+);
+	
+-- Conversões para visualização
+public convertNumberToSuit: (nat1) ==> seq of char
+	convertNumberToSuit(num) == (
+		return getFig(num) ^ [getSuit(num)]; 
+	);
+	
+public getSuit: (nat1) ==> char
+	getSuit(num) == (
+		if num >= 1 and num <= 13
+			then return 's'
+		else if num >= 14 and num <= 26
+			then return 'h'
+		else if num >= 27 and num <= 39
+			then return 'd'
+		else
+			return 'c';
+	);
+
+public getFig: (nat1) ==> seq of char
+	getFig(num) == (
+		if num mod 13 = 0
+			then return "K"
+		else if num mod 12 = 0
+			then return "Q"
+		else if num mod 11 = 0
+			then return "J"
+		else if num mod 10 = 0
+			then return "10"
+		else if num mod 9 = 0
+			then return "9"
+		else if num mod 8 = 0
+			then return "8"
+		else if num mod 7 = 0
+			then return "7"
+		else if num mod 6 = 0
+			then return "6"
+		else if num mod 5 = 0
+			then return "5"
+		else if num mod 4 = 0
+			then return "4"
+		else if num mod 3 = 0
+			then return "3"
+		else if num mod 2 = 0
+			then return "2"	
+		else
+			return "A";
+	);
+	
+-- Conversão para score
+public getPoints: (nat1) ==> nat1
+	getPoints(num) == (
+			return num mod 13;
+);
+	
 	
 functions
 
@@ -56,8 +214,9 @@ public SumSet: set of nat -> nat
 		else let e in set s
 					in
 						e + SumSet(s\{e})
-	)
+	);
 
+	
 traces
 -- TODO Define Combinatorial Test Traces here
 end Pyramid
