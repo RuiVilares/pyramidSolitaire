@@ -1,6 +1,6 @@
 class Pyramid
 types
-	public CardNumber = nat1
+	public CardNumber = nat
 	   inv n == n <= 52;
 	public DeckType = seq of nat1;
 	public String = seq of char;
@@ -8,23 +8,29 @@ values
 -- TODO Define values here
 instance variables
 	public deck: seq of CardNumber := [];
-	public pyramidDeck: seq of seq of CardNumber := [];
-	public auxDeck: seq of CardNumber := [];
-	public cardFigLabels: seq of String := ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-	public cardSuitLabels: String := ['s', 'h', 'd', 'c'];
-	
+	public static pyramidDeck: seq of seq of CardNumber := [];
+	public static auxDeck: seq of CardNumber := [];
+	public validDeck: seq of CardNumber:= [];
+	public static selectedCards: seq of seq of nat:= [];
+	public static score: int := 0;
+	public static selected: int := 0;
 	-- Para uso do power set
-	private static setExample: set of nat := {};
+	public static setExample: set of nat := {};
 	
 	
 operations
+public Pyramid: () ==> Pyramid
+	Pyramid() == (createDeck(); createPyramidDeck(); return self);
 
+public game: () ==> ()
+	game() == (	
 
-public test() ==
-(	
-	createDeck();
-	createPyramidDeck();
-	--IO`print(self); 
+	getAuxCard();
+
+	updateValidDeck();
+	IO`print("\n");
+	
+	Utils`printStatus();		
 );
 
  -- Cria deck inicial
@@ -70,12 +76,50 @@ public createPyramidDeck() ==
 						);
 				pyramidDeck := pyramidDeck ^ [aux];
 			);
-			printPyramid();
 			
-			getAuxCard();
-			printAuxCards();
+			-- Para testar o validDeck
+			--pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [0, 0, 13, 14, 15], [0, 0, 18, 0, 0, 20], [0,0,0,0,0,0,0]];
+			
 					
 		--	IO`print(getPoints(24));
+);
+
+public updateValidDeck() ==
+(
+	for i = 1 to 7 do (
+		for j = 1 to i do (
+			if checkValidCard(i, j)
+				then validDeck := [pyramidDeck(i)(j)] ^ validDeck;
+		);
+	);
+	for i = 1 to len auxDeck do (
+		if i < 3 
+			then validDeck := [auxDeck(i)] ^ validDeck;
+	);
+);
+
+public checkValidCard: nat1 * nat1 ==> bool
+	checkValidCard(i, j) == (
+		if pyramidDeck(i)(j) = 0
+			then return false
+		else if i = 7
+			then return true
+		else if pyramidDeck(i+1)(j) = 0 and pyramidDeck(i+1)(j+1) = 0
+			then return true
+		else
+			return false;
+);
+
+-- Seleciona carta
+public selectedCard: nat * nat1 ==> bool
+	selectedCard(i, j) == (
+		for counter = 1 to len validDeck do (
+			if validDeck(counter) = pyramidDeck(i)(j)
+				then (selected := selected + Utils`cardToPoints(pyramidDeck(i)(j));
+							selectedCards:= [[i,j]] ^ selectedCards;					
+							return true;)
+		);
+		return false;
 );
 
 -- Retira carta do deck auxiliar
@@ -98,6 +142,14 @@ public removeCard: DeckType * nat1 ==> DeckType
 		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
 );
 
+public updateGame() ==> ()
+	updateGame() == (
+		if selected = 13
+			then (score 
+);
+
+-- Traduz regras em pontos
+public move
 
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
@@ -122,62 +174,6 @@ public continueGame: () ==> bool
 );
 
 
-public printPyramid: () ==> ()
-	printPyramid() == (
-		for counter = 1 to 7
-			do (
-				for counter2 = 1 to counter 
-					do (		
-							IO`print(convertNumberToSuit(pyramidDeck(counter)(counter2)));
-							IO`print(" ");
-							);
-				IO`print("\n");
-			);
-);
-
-public printAuxCards: () ==> ()
-	printAuxCards() == (
-		dcl numCardToPrint: nat := 0;
-		if len auxDeck >= 2
-			then numCardToPrint := 2
-		else 
-			numCardToPrint := len auxDeck;
-		
-		for counter = 1 to numCardToPrint		
-			do (
-				IO`print(convertNumberToSuit(auxDeck(counter)));
-				IO`print(" ");
-			);
-);
-	
--- Conversões para visualização
-public convertNumberToSuit: (nat1) ==> String
-	convertNumberToSuit(num) == (
-		return getFig(num) ^ [getSuit(num)]; 
-	);
-	
-public getSuit: (nat1) ==> char
-	getSuit(num) == (
-		if num >= 1 and num <= 13
-			then return cardSuitLabels(1)
-		else if num >= 14 and num <= 26
-			then return cardSuitLabels(2)
-		else if num >= 27 and num <= 39
-			then return cardSuitLabels(3)
-		else
-			return cardSuitLabels(4);
-	);
-
-
-public getFig: (nat1) ==> String
-	getFig(num) == (
-		dcl x: nat := num mod 13;
-		if x = 0
-			then return "K"
-		else
-			 return cardFigLabels(x);
-	);
-	
 -- Conversão para score
 public getPoints: (nat1) ==> nat1
 	getPoints(num) == (

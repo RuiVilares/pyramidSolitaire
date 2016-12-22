@@ -1,0 +1,123 @@
+class Utils
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public static cardFigLabels: seq of Pyramid`String := ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+	public static cardSuitLabels: Pyramid`String := ['s', 'h', 'd', 'c'];
+	public static cardPoints: seq of nat1 := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+	
+operations
+
+public static printPyramid: () ==> ()
+	printPyramid() == (
+		for counter = 1 to 7
+			do (
+				IO`print(counter);
+				IO`print(" ");
+				for counter2 = 1 to counter 
+					do (		
+							IO`print(convertNumberToSuit(Pyramid`pyramidDeck(counter)(counter2)));
+							IO`print(" ");
+							);
+				IO`print("\n");
+			);
+		IO`print("   1  2  3  4  5  6  7\n\n");
+);
+
+public static printAuxCards: () ==> ()
+	printAuxCards() == (
+		dcl numCardToPrint: nat := 0;
+		if len Pyramid`auxDeck >= 2
+			then numCardToPrint := 2
+		else 
+			numCardToPrint := len Pyramid`auxDeck;
+
+		IO`print("0 ");
+		for counter = 1 to numCardToPrint		
+			do (
+				IO`print(convertNumberToSuit(Pyramid`auxDeck(counter)));
+				IO`print(" ");
+			);
+		IO`print("\n   1  2");
+);
+
+-- Conversões para visualização
+public static convertNumberToSuit: (nat) ==> Pyramid`String
+	convertNumberToSuit(num) == (
+		if num = 0
+			then return "  "
+		else
+		 return getFig(num) ^ [getSuit(num)]; 
+	);
+
+public static getSuit: (nat1) ==> char
+	getSuit(num) == (
+		if num >= 1 and num <= 13
+			then return cardSuitLabels(1)
+		else if num >= 14 and num <= 26
+			then return cardSuitLabels(2)
+		else if num >= 27 and num <= 39
+			then return cardSuitLabels(3)
+		else
+			return cardSuitLabels(4);
+	);
+
+public static getFig: nat1 ==> Pyramid`String
+	getFig(num) == (
+		dcl x: nat := num mod 13;
+		if x = 0
+			then return "K"
+		else
+			 return cardFigLabels(x);
+	);
+
+-- Traduz pontos da carta
+public static cardToPoints: nat1 ==> nat1
+	cardToPoints(idCard) == (
+		dcl points: nat := idCard mod 13;
+		if points = 0
+			then return 13
+		else
+			 return cardPoints(points);
+);
+
+
+-- Imprime cartas selecionadas
+public static printSelectedCards() == (
+		IO`print("Selected Cards: ");
+		for counter = 1 to len Pyramid`selectedCards do (
+			IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
+			IO`print(" "); );
+		IO`print("\n");
+	);
+	
+-- Imprime score
+public static printScore() == (
+	IO`print("Score: ");
+	IO`print(Pyramid`score);
+	IO`print("\n");
+);
+
+-- Imprime selected
+public static printSelected() == (
+	IO`print("Selected: ");
+	IO`print(Pyramid`selected);
+	IO`print("\n\n");
+);
+
+-- Imprime Status
+public static printStatus() == (
+	printScore();
+	printSelected();
+	printSelectedCards();
+	printPyramid();
+	printAuxCards();
+);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Utils
