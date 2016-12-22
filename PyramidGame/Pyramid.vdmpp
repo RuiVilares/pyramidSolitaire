@@ -16,6 +16,8 @@ instance variables
 	public static selected: int := 0;
 	-- Para uso do power set
 	public static setExample: set of nat := {};
+	public bonusPyramidDeck: bool := true;
+	public bonusDeck: bool := true;
 	
 	
 operations
@@ -25,19 +27,28 @@ public Pyramid: () ==> Pyramid
 public game: () ==> ()
 	game() == (	
 
-	getAuxCard();
-
+	--getAuxCard();
 	updateValidDeck();
-	IO`print("\n");
+	Utils`printStatus();
 	
-	Utils`printStatus();		
+	IO`print("\n");
+	IO`print(selectedCard(7,7));
+	IO`print("\n");
+	updateGame();
+	IO`print(selectedCard(7,3));
+	IO`print("\n");
+	updateGame();	
+	
+	Utils`printStatus();	
+	
+	updateGame();	
+	
 );
 
  -- Cria deck inicial
 public createDeck() ==
 (
 	deck := [ i | i in set {1, ..., 52}];
-	
 );	
 
 -- aceder
@@ -76,9 +87,8 @@ public createPyramidDeck() ==
 						);
 				pyramidDeck := pyramidDeck ^ [aux];
 			);
-			
 			-- Para testar o validDeck
-			--pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [0, 0, 13, 14, 15], [0, 0, 18, 0, 0, 20], [0,0,0,0,0,0,0]];
+			--pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
 			
 					
 		--	IO`print(getPoints(24));
@@ -142,15 +152,46 @@ public removeCard: DeckType * nat1 ==> DeckType
 		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
 );
 
-public updateGame() ==> ()
+public updateGame: () ==> ()
 	updateGame() == (
 		if selected = 13
-			then (score 
+			then (calcScore(); removeSelectedCards(); selected := 0)
+		else if selected > 13
+			then (selectedCards := []; selected := 0);   
 );
 
 -- Traduz regras em pontos
-public move
+public combo: () ==> nat
+	combo() == (
+		if (len selectedCards > 2)
+			then return ((len selectedCards - 2) * 10)
+		else
+			 return 0
+);
 
+public bonus: () ==> nat
+	bonus() == (
+		if (bonusPyramidDeck and len pyramidDeck = 0)
+			then (bonusPyramidDeck := false; return 50;) 
+		else if (bonusDeck and len deck = 0)
+			then (bonusDeck := false; return 30;) 
+		else
+			 return 0
+);
+
+public calcScore: () ==> ()
+	calcScore() == (
+		score := score + ((len selectedCards) * 10) + combo() + bonus();
+);
+
+
+public removeSelectedCards: () ==> ()
+	removeSelectedCards() == (
+		for i = 1 to len selectedCards
+		do (
+			pyramidDeck(selectedCards(i)(1))(selectedCards(i)(2)) := 0;
+		);
+);
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
 public continueGame: () ==> bool

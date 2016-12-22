@@ -90,7 +90,7 @@ public static printSelectedCards() == (
 		for counter = 1 to len Pyramid`selectedCards do (
 			IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
 			IO`print(" "); );
-		IO`print("\n");
+		IO`print("\n\n");
 	);
 	
 -- Imprime score
@@ -104,7 +104,7 @@ public static printScore() == (
 public static printSelected() == (
 	IO`print("Selected: ");
 	IO`print(Pyramid`selected);
-	IO`print("\n\n");
+	IO`print("\n");
 );
 
 -- Imprime Status
