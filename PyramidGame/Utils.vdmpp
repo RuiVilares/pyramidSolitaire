@@ -12,12 +12,10 @@ operations
 
 public static printPyramid: () ==> ()
 	printPyramid() == (
-		for counter = 1 to 7
-			do (
+		for counter = 1 to 7 do (
 				IO`print(counter);
 				IO`print(" ");
-				for counter2 = 1 to counter 
-					do (		
+				for counter2 = 1 to counter do (		
 							IO`print(convertNumberToSuit(Pyramid`pyramidDeck(counter)(counter2)));
 							IO`print(" ");
 							);
@@ -35,8 +33,7 @@ public static printAuxCards: () ==> ()
 			numCardToPrint := len Pyramid`auxDeck;
 
 		IO`print("0 ");
-		for counter = 1 to numCardToPrint		
-			do (
+		for counter = 1 to numCardToPrint	do (
 				IO`print(convertNumberToSuit(Pyramid`auxDeck(counter)));
 				IO`print(" ");
 			);
