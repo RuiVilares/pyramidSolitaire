@@ -40,6 +40,39 @@ public static printAuxCards: () ==> ()
 		IO`print("\n   1  2");
 );
 
+
+-- Imprime cartas selecionadas
+public static printSelectedCards() == (
+		IO`print("Selected Cards: ");
+		for counter = 1 to len Pyramid`selectedCards do (
+			IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
+			IO`print(" "); );
+		IO`print("\n\n");
+	);
+	
+-- Imprime score
+public static printScore() == (
+	IO`print("Score: ");
+	IO`print(Pyramid`score);
+	IO`print("\n");
+);
+
+-- Imprime selected
+public static printSelected() == (
+	IO`print("Selected: ");
+	IO`print(Pyramid`selected);
+	IO`print("\n");
+);
+
+-- Imprime Status
+public static printStatus() == (
+	printScore();
+	printSelected();
+	printSelectedCards();
+	printPyramid();
+	printAuxCards();
+);
+
 -- Conversões para visualização
 public static convertNumberToSuit: (nat) ==> Pyramid`String
 	convertNumberToSuit(num) == (
@@ -78,39 +111,6 @@ public static cardToPoints: nat1 ==> nat1
 			then return 13
 		else
 			 return cardPoints(points);
-);
-
-
--- Imprime cartas selecionadas
-public static printSelectedCards() == (
-		IO`print("Selected Cards: ");
-		for counter = 1 to len Pyramid`selectedCards do (
-			IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
-			IO`print(" "); );
-		IO`print("\n\n");
-	);
-	
--- Imprime score
-public static printScore() == (
-	IO`print("Score: ");
-	IO`print(Pyramid`score);
-	IO`print("\n");
-);
-
--- Imprime selected
-public static printSelected() == (
-	IO`print("Selected: ");
-	IO`print(Pyramid`selected);
-	IO`print("\n");
-);
-
--- Imprime Status
-public static printStatus() == (
-	printScore();
-	printSelected();
-	printSelectedCards();
-	printPyramid();
-	printAuxCards();
 );
 
 functions

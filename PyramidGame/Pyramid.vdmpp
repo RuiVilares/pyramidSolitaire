@@ -4,6 +4,9 @@ types
 	   inv n == n <= 52;
 	public DeckType = seq of nat1;
 	public String = seq of char;
+	public NaturalsNums = seq of nat;
+	public NaturalsNumsDiff0 = seq of nat1;
+
 values
 -- TODO Define values here
 instance variables
@@ -11,18 +14,22 @@ instance variables
 	public static pyramidDeck: seq of seq of CardNumber := [];
 	public static auxDeck: seq of CardNumber := [];
 	public validDeck: seq of CardNumber:= [];
-	public static selectedCards: seq of seq of nat:= [];
+	public static selectedCards: seq of NaturalsNums:= [];
 	public static score: int := 0;
 	public static selected: int := 0;
-	-- Para uso do power set
-	public static setExample: set of nat := {};
 	public bonusPyramidDeck: bool := true;
 	public bonusDeck: bool := true;
 	
 	
 operations
 public Pyramid: () ==> Pyramid
-	Pyramid() == (createDeck(); createPyramidDeck(); return self);
+	Pyramid() == (
+		createDeck();
+		createPyramidDeck();
+		game();
+		return self
+	);
+
 
 public game: () ==> ()
 	game() == (	
@@ -43,6 +50,11 @@ public game: () ==> ()
 	
 	updateGame();	
 	
+	-- Verifica se jogo terminou
+	IO`print(isFinished());
+	-- Verifica se existe jogadas possíveis
+	IO`print(continueGame());
+		
 );
 
  -- Cria deck inicial
@@ -51,10 +63,11 @@ public createDeck() ==
 	deck := [ i | i in set {1, ..., 52}];
 );	
 
+-- Piramide de Cartas
 -- Cria a Piramide de Cartas
 public createPyramidDeck() == (	
 	for counter = 0 to 6 do (
-		dcl aux : seq of nat1 := [];
+		dcl aux : NaturalsNumsDiff0 := [];
 		for counter2 = 0 to counter do (
 			dcl value: nat1 := getCard(deck);
 				aux := [value] ^ aux;							
@@ -65,6 +78,8 @@ public createPyramidDeck() == (
 			--pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
 );
 
+-- Cartas válidas
+-- Atualiza o conjunto de cartas que são válidas para jogar
 public updateValidDeck() == (
 	for i = 1 to 7 do (
 		for j = 1 to i do (
@@ -78,6 +93,7 @@ public updateValidDeck() == (
 	);
 );
 
+-- Verifica se a carta é válida para ser jogada
 public checkValidCard: nat1 * nat1 ==> bool
 	checkValidCard(i, j) == (
 		if pyramidDeck(i)(j) = 0
@@ -90,7 +106,16 @@ public checkValidCard: nat1 * nat1 ==> bool
 			return false;
 );
 
--- Seleciona carta
+-- Baralho auxiliar
+-- Retira carta do deck auxiliar
+public getAuxCard() ==
+(	
+	dcl value: nat1 := getCard(deck);
+	auxDeck := [value] ^ auxDeck;
+);
+
+-- Jogar
+-- Seleção de carta pelo utilizador
 public selectedCard: nat * nat1 ==> bool
 	selectedCard(i, j) == (
 		for counter = 1 to len validDeck do (
@@ -102,26 +127,8 @@ public selectedCard: nat * nat1 ==> bool
 		return false;
 );
 
--- Retira carta do deck auxiliar
-public getAuxCard() ==
-(	
-	dcl value: nat1 := getCard(deck);
-	auxDeck := [value] ^ auxDeck;
-);
 
--- Remove carta passada como argumento do deck inicial
-public getCard: (DeckType) ==> nat1
-	getCard(deckToGet) == (
-		dcl position: nat1 := new MATH().rand(len deckToGet) + 1;
-		deck := removeCard(deckToGet, position);
-		return deckToGet(position);
-);
-	
-public removeCard: DeckType * nat1 ==> DeckType
-	removeCard(deckToRemove, position) == (
-		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
-);
-
+-- Atualiza estado de jogo
 public updateGame: () ==> ()
 	updateGame() == (
 		if selected = 13
@@ -139,6 +146,7 @@ public combo: () ==> nat
 			 return 0
 );
 
+-- Pontos bónus
 public bonus: () ==> nat
 	bonus() == (
 		if (bonusPyramidDeck and len pyramidDeck = 0)
@@ -149,43 +157,68 @@ public bonus: () ==> nat
 			 return 0
 );
 
+-- Calcula score
 public calcScore: () ==> ()
 	calcScore() == (
 		score := score + ((len selectedCards) * 10) + combo() + bonus();
 );
 
+-- Verifica se jogo termina
+public isFinished: () ==> bool
+	isFinished() == (
+		if len pyramidDeck = 0 and len auxDeck = 0
+			then return true
+		else
+			return false;
+	);
 
-public removeSelectedCards: () ==> ()
-	removeSelectedCards() == (
-		for i = 1 to len selectedCards do (
-			pyramidDeck(selectedCards(i)(1))(selectedCards(i)(2)) := 0;
-		);
-);
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
 public continueGame: () ==> bool
 	continueGame() == (		
 		dcl sumCombination : nat := 0;
-		IO`print(power setExample); -- listas das combinações possiveis
+		dcl setValidDeck: set of CardNumber:= elems validDeck;
 	
 		-- Combina os elementos da lista exemplo e soma cada sublista
-		for all value in set power setExample do ( 
-					IO`print("\nCombinação possível: "); 
-					IO`print(value);
-					IO`print(", Soma: "); 
-				  sumCombination := SumSet(value);
-					IO`print(sumCombination);
-					
-					if sumCombination >= 13
-						then return true;
-				 );
-			return false;
+		for all value in set power setValidDeck do ( 
+			sumCombination := SumSet(value);
+			 if sumCombination >= 13
+				then return true;
+		);
+		return false;
 );
 
 -- Conversão para score
-public getPoints: (nat1) ==> nat1
+pure public static getPoints: (nat1) ==> nat1
 	getPoints(num) == (
-			return num mod 13;
+		dcl x: nat := num mod 13;
+		if x = 0
+			then return 13
+		else
+			 return x;
+);
+
+
+-- Retira carta (passada como argumento) do deck inicial
+public getCard: (DeckType) ==> nat1
+	getCard(deckToGet) == (
+		dcl position: nat1 := new MATH().rand(len deckToGet) + 1;
+		deck := removeCard(deckToGet, position);
+		return deckToGet(position);
+);
+
+-- Remover carta de baralho	
+public removeCard: DeckType * nat1 ==> DeckType
+	removeCard(deckToRemove, position) == (
+		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
+);
+
+-- Remove cartas selecionadas
+public removeSelectedCards: () ==> ()
+	removeSelectedCards() == (
+		for i = 1 to len selectedCards do (
+			pyramidDeck(selectedCards(i)(1))(selectedCards(i)(2)) := 0;
+		);
 );
 	
 	
@@ -199,9 +232,8 @@ public SumSet: set of nat -> nat
 			then 0
 		else let e in set s
 					in
-						e + SumSet(s\{e})
+						getPoints(e) + SumSet(s\{e})
 	);
-
 	
 traces
 -- TODO Define Combinatorial Test Traces here
