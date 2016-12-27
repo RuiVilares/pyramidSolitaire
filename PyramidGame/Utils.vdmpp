@@ -15,6 +15,8 @@ public static printPyramid: () ==> ()
 		for counter = 1 to 7 do (
 				IO`print(counter);
 				IO`print(" ");
+				--for i = counter to 7 do (
+				--	IO`print(" "); );
 				for counter2 = 1 to counter do (		
 							IO`print(convertNumberToSuit(Pyramid`pyramidDeck(counter)(counter2)));
 							IO`print(" ");
@@ -37,24 +39,27 @@ public static printAuxCards: () ==> ()
 				IO`print(convertNumberToSuit(Pyramid`auxDeck(counter)));
 				IO`print(" ");
 			);
-		IO`print("\n   1  2");
+		IO`print("\n   1  2\n");
 );
 
 
 -- Imprime cartas selecionadas
 public static printSelectedCards() == (
 		IO`print("Selected Cards: ");
-		for counter = 1 to len Pyramid`selectedCards do (
-			IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
-			IO`print(" "); );
+		if len Pyramid`selectedCards = 0
+			then IO`print("-")
+		else
+			for counter = 1 to len Pyramid`selectedCards do (
+				if Pyramid`selectedCards(counter)(1) = 0 then IO`print(convertNumberToSuit(Pyramid`auxDeck(Pyramid`selectedCards(counter)(2))))
+				else IO`print(convertNumberToSuit(Pyramid`pyramidDeck(Pyramid`selectedCards(counter)(1))(Pyramid`selectedCards(counter)(2))));
+				IO`print(" "); );
 		IO`print("\n\n");
 	);
 	
 -- Imprime score
 public static printScore() == (
-	IO`print("Score: ");
-	IO`print(Pyramid`score);
-	IO`print("\n");
+	IO`print("\nScore: ");
+	IO`println(Pyramid`score);
 );
 
 -- Imprime selected

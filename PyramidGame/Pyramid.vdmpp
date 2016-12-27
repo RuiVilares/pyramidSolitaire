@@ -13,7 +13,7 @@ instance variables
 	public deck: seq of CardNumber := [];
 	public static pyramidDeck: seq of seq of CardNumber := [];
 	public static auxDeck: seq of CardNumber := [];
-	public validDeck: seq of CardNumber:= [];
+	public validDeck: set of CardNumber:= {};
 	public static selectedCards: seq of NaturalsNums:= [];
 	public static score: int := 0;
 	public static selected: int := 0;
@@ -38,10 +38,10 @@ public selectCard: nat1 * nat ==> ()
 			if selectedCards(position) = [yCoord,xCoord]
 				then deselectCard(selectedCards, position, yCoord, xCoord);
 		);
-			
+		-- Adiciona a carta à cartas selecionadas e incrementa o valor do selected
 		if not selectedCard(yCoord, xCoord) then IO`print("Seleção inválida\n");
 
-		if not continueGame() then IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n");
+	--	if not continueGame() then IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n");
 
 		if updateGame()
 			then (
@@ -61,7 +61,8 @@ public selectCard: nat1 * nat ==> ()
 public continueGame: () ==> bool
 	continueGame() == (	
 		dcl sumCombination : nat := 0;
-		dcl setValidDeck: set of CardNumber:= elems validDeck;
+		--dcl setValidDeck: set of CardNumber:= elems validDeck;
+		dcl setValidDeck: set of CardNumber:= validDeck;
 		
 		if isFinished()
 			then (IO`print("Parabéns! Ganhaste o jogo! O teu score é "); IO`print(score););
@@ -71,7 +72,7 @@ public continueGame: () ==> bool
 		-- Combina os elementos da lista exemplo e soma cada sublista
 		for all value in set power setValidDeck do ( 
 			sumCombination := SumSet(value);
-			 if sumCombination >= 13
+			 if sumCombination = 13
 				then return true;
 		);
 		return false;
@@ -100,17 +101,20 @@ public createPyramidDeck() == (
 
 -- Cartas válidas
 -- Atualiza o conjunto de cartas que são válidas para jogar
-public updateValidDeck() == (
-	for i = 1 to 7 do (
-		for j = 1 to i do (
-			if checkValidCard(i, j)
-				then validDeck := [pyramidDeck(i)(j)] ^ validDeck;
+public updateValidDeck: () ==> ()
+	updateValidDeck() == (
+		dcl validDeckLocal: set of CardNumber:= {};
+		for i = 1 to 7 do (
+			for j = 1 to i do (
+				if checkValidCard(i, j)
+					then validDeckLocal := {pyramidDeck(i)(j)} union validDeckLocal;
+			);
 		);
-	);
-	for i = 1 to len auxDeck do (
-		if i < 3 
-			then validDeck := [auxDeck(i)] ^ validDeck;
-	);
+		for i = 1 to len auxDeck do (
+			if i < 3 
+				then validDeckLocal := {auxDeck(i)} union validDeckLocal;
+		);
+		validDeck := validDeckLocal;
 );
 
 -- Verifica se a carta é válida para ser jogada
@@ -141,12 +145,12 @@ public getAuxCard() ==
 -- Seleção de carta pelo utilizador
 public selectedCard: nat * nat1 ==> bool
 	selectedCard(i, j) == (
-		for counter = 1 to len validDeck do (
-			if i = 0 and auxDeck(j) = validDeck(counter) or i <> 0 and pyramidDeck(i)(j) = validDeck(counter)
-				then (selected := selected + Utils`cardToPoints(validDeck(counter));
+		for all value in set validDeck do ( 
+			if i = 0 and auxDeck(j) = value or i <> 0 and pyramidDeck(i)(j) = value
+				then (selected := selected + Utils`cardToPoints(value);
 							selectedCards:= [[i,j]] ^ selectedCards;					
 							return true;)
-		);
+		);	
 		return false;
 );
 
@@ -155,7 +159,7 @@ public selectedCard: nat * nat1 ==> bool
 public updateGame: () ==> bool
 	updateGame() == (
 		if selected = 13
-			then (calcScore(); removeSelectedCards(); selected := 0; return true;)
+			then (calcScore(); removeSelectedCards(); selectedCards := []; selected := 0; return true;)
 		else if selected > 13
 			then (selectedCards := []; selected := 0; return true;) 
 		else return false;  
