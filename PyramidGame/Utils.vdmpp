@@ -45,7 +45,7 @@ public static printAuxCards: () ==> ()
 
 -- Imprime cartas selecionadas
 public static printSelectedCards() == (
-		IO`print("Selected Cards: ");
+		IO`print("\nSelected Cards: ");
 		if len Pyramid`selectedCards = 0
 			then IO`print("-")
 		else
@@ -58,15 +58,12 @@ public static printSelectedCards() == (
 	
 -- Imprime score
 public static printScore() == (
-	IO`print("\nScore: ");
-	IO`println(Pyramid`score);
+	IO`printf("\nScore: %s\n", [Pyramid`score]);
 );
 
 -- Imprime selected
 public static printSelected() == (
-	IO`print("Selected: ");
-	IO`print(Pyramid`selected);
-	IO`print("\n");
+	IO`printf("Selected: %s", [Pyramid`selected]);
 );
 
 -- Imprime Status
