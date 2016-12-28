@@ -47,7 +47,8 @@ public selectCard: nat1 * nat ==> ()
 				if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return ));
 			
 		Utils`printStatus();	
-);
+)	
+pre (yCoord = 0 and auxDeck(xCoord) in set validDeck) or pyramidDeck(yCoord)(xCoord) in set validDeck;
 
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
@@ -75,7 +76,8 @@ public continueGame: () ==> bool
 public createDeck() ==
 (
 	deck := [ i | i in set {1, ..., 52}];
-);	
+)
+post len deck = 52;
 
 -- Cria a Piramide de Cartas
 public createPyramidDeck() == (	
