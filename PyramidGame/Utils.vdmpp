@@ -10,22 +10,22 @@ instance variables
 	
 operations
 
+-- Imprime baralho da piramide
 public static printPyramid: () ==> ()
 	printPyramid() == (
 		for counter = 1 to 7 do (
-				IO`print(counter);
+			IO`print(counter);
+			IO`print(" ");
+			for counter2 = 1 to counter do (		
+				IO`print(convertNumberToSuit(Pyramid`pyramidDeck(counter)(counter2)));
 				IO`print(" ");
-				--for i = counter to 7 do (
-				--	IO`print(" "); );
-				for counter2 = 1 to counter do (		
-							IO`print(convertNumberToSuit(Pyramid`pyramidDeck(counter)(counter2)));
-							IO`print(" ");
-							);
-				IO`print("\n");
 			);
+			IO`print("\n");
+		);
 		IO`print("   1  2  3  4  5  6  7\n\n");
-);
+	);
 
+-- Imprime baralho de cartas auxiliares
 public static printAuxCards: () ==> ()
 	printAuxCards() == (
 		dcl numCardToPrint: nat := 0;
@@ -33,15 +33,13 @@ public static printAuxCards: () ==> ()
 			then numCardToPrint := 2
 		else 
 			numCardToPrint := len Pyramid`auxDeck;
-
 		IO`print("0 ");
 		for counter = 1 to numCardToPrint	do (
 				IO`print(convertNumberToSuit(Pyramid`auxDeck(counter)));
 				IO`print(" ");
 			);
 		IO`print("\n   1  2\n");
-);
-
+	);
 
 -- Imprime cartas selecionadas
 public static printSelectedCards() == (
@@ -84,6 +82,7 @@ public static convertNumberToSuit: (nat) ==> Pyramid`String
 		 return getFig(num) ^ [getSuit(num)]; 
 	);
 
+-- Retorna naipe
 public static getSuit: (nat1) ==> char
 	getSuit(num) == (
 		if num >= 1 and num <= 13
@@ -96,6 +95,7 @@ public static getSuit: (nat1) ==> char
 			return cardSuitLabels(4);
 	);
 
+-- Retorna figura
 public static getFig: nat1 ==> Pyramid`String
 	getFig(num) == (
 		dcl x: nat := num mod 13;
@@ -113,14 +113,14 @@ public static cardToPoints: nat1 ==> nat1
 			then return 13
 		else
 			 return cardPoints(points);
-);
+	);
 
 -- Retorna menor nat
 pure public static min: nat * nat1 ==> nat
 	min(x, y) == (
 		if x < y then return x
 		else return y;
-);
+	);
 
 functions
 -- TODO Define functiones here

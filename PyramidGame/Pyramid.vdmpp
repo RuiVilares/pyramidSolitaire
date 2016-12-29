@@ -22,16 +22,17 @@ instance variables
 	
 	
 operations
+-- Construtor
 public Pyramid: () ==> Pyramid
 	Pyramid() == (
 		createDeck();
 		createPyramidDeck();
 		updateValidDeck();
 		Utils`printStatus();
-		
 		return self;
 	);
 
+-- Faz jogada: seleção de carta para ir a jogo
 public selectCard: nat1 * nat ==> ()
 	selectCard(xCoord, yCoord) == (	
 		-- Se carta selecionada já tinha sido selecionada, desseleciona-a
@@ -48,15 +49,13 @@ public selectCard: nat1 * nat ==> ()
 				if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return ));
 				
 		Utils`printStatus();
-)	
+	)	
 pre (yCoord = 0 and Utils`min(len auxDeck, 2) >= xCoord) or (yCoord <> 0 and len pyramidDeck(yCoord) >= xCoord);
 
--- Pesquisar se existem as condições necessárias para o jogo continuar
---	- Existir jogadas válias
+-- Pesquisar se existem as condições necessárias para o jogo continuar (não terminado e com jogadas possíveis)
 public continueGame: () ==> bool
 	continueGame() == (	
 		dcl sumCombination : nat := 0;
-		--dcl setValidDeck: set of CardNumber:= elems validDeck;
 		dcl setValidDeck: set of CardNumber:= validDeck;
 		
 		if isFinished()
@@ -82,6 +81,7 @@ post len deck = 52;
 
 -- Cria a Piramide de Cartas
 public createPyramidDeck() == (	
+IO`print(len pyramidDeck);
 	for counter = 0 to 6 do (
 		dcl aux : NaturalsNumsDiff0 := [];
 		for counter2 = 0 to counter do (
@@ -90,7 +90,8 @@ public createPyramidDeck() == (
 		);
 		pyramidDeck := pyramidDeck ^ [aux];
 	);
-)
+	IO`print(len pyramidDeck);
+	)
 pre len pyramidDeck = 0
 post len pyramidDeck = 7;
 
@@ -109,7 +110,7 @@ public updateValidDeck: () ==> ()
 				then validDeckLocal := {auxDeck(i)} union validDeckLocal;
 		);
 		validDeck := validDeckLocal;
-);
+	);
 
 -- Verifica se a carta é válida para ser jogada
 public checkValidCard: nat1 * nat1 ==> bool
@@ -122,7 +123,7 @@ public checkValidCard: nat1 * nat1 ==> bool
 			then return true
 		else
 			return false;
-);
+	);
 
 -- Retira carta para baralho auxiliar
 public getAuxCard() ==
@@ -132,7 +133,7 @@ public getAuxCard() ==
 	updateValidDeck();
 	-- Mostra carta
 	Utils`printStatus();
-)
+	)
 pre len deck > 0
 post len auxDeck > len auxDeck~;
 
@@ -146,8 +147,7 @@ public selectedCard: nat * nat1 ==> bool
 							return true;)
 		);	
 		return false;
-);
-
+	);
 
 -- Verifica e atualiza estado de jogo
 public updateGame: () ==> bool
@@ -157,7 +157,7 @@ public updateGame: () ==> bool
 		else if selected > 13
 			then (selectedCards := []; selected := 0; return true;) 
 		else return false;  
-);
+	);
 
 -- Traduz regras em pontos
 public combo: () ==> nat
@@ -183,7 +183,7 @@ public bonus: () ==> nat
 public calcScore: () ==> ()
 	calcScore() == (
 		score := score + ((len selectedCards) * 10) + combo() + bonus();
-);
+	);
 
 -- Verifica se jogo termina
 public isFinished: () ==> bool
@@ -202,7 +202,7 @@ pure public static getPoints: (nat1) ==> nat1
 			then return 13
 		else
 			 return x;
-);
+	);
 
 -- Retira carta do deck inicial
 public getCard: DeckType ==> nat1
@@ -210,7 +210,7 @@ public getCard: DeckType ==> nat1
 		dcl position: nat1 := new MATH().rand(len deckToGet) + 1;
 		deck := removeCard(deckToGet, position);
 		return deckToGet(position);
-)
+	)
 pre len deck > 0
 post len deck < len deck~;
 
@@ -218,7 +218,7 @@ post len deck < len deck~;
 public removeCard: DeckType * nat1 ==> DeckType
 	removeCard(deckToRemove, position) == (
 		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
-)
+	)
 pre len deckToRemove >= position;
 
 -- Desseleciona carta
@@ -227,7 +227,7 @@ public deselectCard: seq of NaturalsNums * nat1 * nat * nat1 ==> ()
 		selectedCards := deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len selectedCards);
 		if y = 0 then selected := selected - Utils`cardToPoints(auxDeck(x))
 		else selected := selected - Utils`cardToPoints(pyramidDeck(y)(x));
-)
+	)
 post len selectedCards < len selectedCards~;
 
 -- Remove cartas selecionadas
@@ -241,9 +241,8 @@ public removeSelectedCards: () ==> ()
 			else
 				pyramidDeck(selectedCards(i)(1))(selectedCards(i)(2)) := 0;
 		);
-);
-	
-	
+	);
+		
 functions
 -- Sum Set from structure to single value
 -- http://kurser.iha.dk/eit/tivdm1/Quick_Overview_of_VDM_Operators.pdf
