@@ -28,6 +28,7 @@ public Pyramid: () ==> Pyramid
 		createPyramidDeck();
 		updateValidDeck();
 		Utils`printStatus();
+		
 		return self;
 	);
 
@@ -36,7 +37,7 @@ public selectCard: nat1 * nat ==> ()
 		-- Se carta selecionada já tinha sido selecionada, desseleciona-a
 		for position = 1 to len selectedCards do (
 			if selectedCards(position) = [yCoord,xCoord]
-				then deselectCard(selectedCards, position, yCoord, xCoord);
+				then (deselectCard(selectedCards, position, yCoord, xCoord); Utils`printStatus(); return; )
 		);
 		-- Adiciona a carta à cartas selecionadas e incrementa o valor do selected
 		if not selectedCard(yCoord, xCoord) then IO`print("Seleção inválida\n");
@@ -45,10 +46,10 @@ public selectCard: nat1 * nat ==> ()
 			then (
 				updateValidDeck();
 				if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return ));
-			
-		Utils`printStatus();	
+				
+		Utils`printStatus();
 )	
-pre (yCoord = 0 and auxDeck(xCoord) in set validDeck) or pyramidDeck(yCoord)(xCoord) in set validDeck;
+pre (yCoord = 0 and Utils`min(len auxDeck, 2) >= xCoord) or (yCoord <> 0 and len pyramidDeck(yCoord) >= xCoord);
 
 -- Pesquisar se existem as condições necessárias para o jogo continuar
 --	- Existir jogadas válias
@@ -89,7 +90,9 @@ public createPyramidDeck() == (
 		);
 		pyramidDeck := pyramidDeck ^ [aux];
 	);
-);
+)
+pre len pyramidDeck = 0
+post len pyramidDeck = 7;
 
 -- Atualiza o conjunto de cartas que são válidas para jogar
 public updateValidDeck: () ==> ()
@@ -129,7 +132,9 @@ public getAuxCard() ==
 	updateValidDeck();
 	-- Mostra carta
 	Utils`printStatus();
-);
+)
+pre len deck > 0
+post len auxDeck > len auxDeck~;
 
 -- Seleção de carta pelo utilizador (adiciona às cartas selecionada e incrementa a pontuação)
 public selectedCard: nat * nat1 ==> bool
@@ -199,27 +204,31 @@ pure public static getPoints: (nat1) ==> nat1
 			 return x;
 );
 
--- Retira carta (passada como argumento) do deck inicial
+-- Retira carta do deck inicial
 public getCard: DeckType ==> nat1
 	getCard(deckToGet) == (
 		dcl position: nat1 := new MATH().rand(len deckToGet) + 1;
 		deck := removeCard(deckToGet, position);
 		return deckToGet(position);
-);
+)
+pre len deck > 0
+post len deck < len deck~;
 
 -- Remover carta de baralho	
 public removeCard: DeckType * nat1 ==> DeckType
 	removeCard(deckToRemove, position) == (
 		return deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len deck);
-);
+)
+pre len deckToRemove >= position;
 
 -- Desseleciona carta
 public deselectCard: seq of NaturalsNums * nat1 * nat * nat1 ==> ()
 	deselectCard(deckToRemove, position, y, x) == (
 		selectedCards := deckToRemove(1, ... , position - 1) ^ deckToRemove(position + 1, ... , len selectedCards);
-		if y = 0 then selected := selected + Utils`cardToPoints(auxDeck(x))
-		else selected := selected + Utils`cardToPoints(pyramidDeck(y)(x));
-);
+		if y = 0 then selected := selected - Utils`cardToPoints(auxDeck(x))
+		else selected := selected - Utils`cardToPoints(pyramidDeck(y)(x));
+)
+post len selectedCards < len selectedCards~;
 
 -- Remove cartas selecionadas
 public removeSelectedCards: () ==> ()

@@ -115,6 +115,13 @@ public static cardToPoints: nat1 ==> nat1
 			 return cardPoints(points);
 );
 
+-- Retorna menor nat
+pure public static min: nat * nat1 ==> nat
+	min(x, y) == (
+		if x < y then return x
+		else return y;
+);
+
 functions
 -- TODO Define functiones here
 traces
