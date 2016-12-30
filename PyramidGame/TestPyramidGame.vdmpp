@@ -1,0 +1,67 @@
+class TestPyramidGame is subclass of MyTestCase
+
+operations
+	public newPyramidScn: () ==> ()
+	newPyramidScn() == (
+		dcl game: Pyramid := new Pyramid();
+		MyTestCase`assertEqual(len game.deck, 24);
+		MyTestCase`assertEqual(len game.pyramidDeck, 7);
+		MyTestCase`assertEqual(len game.pyramidDeck(1), 1); 
+		MyTestCase`assertEqual(len game.pyramidDeck(2), 2); 
+		MyTestCase`assertEqual(len game.pyramidDeck(3), 3); 
+		MyTestCase`assertEqual(len game.pyramidDeck(4), 4); 
+		MyTestCase`assertEqual(len game.pyramidDeck(5), 5); 
+		MyTestCase`assertEqual(len game.pyramidDeck(6), 6); 
+		MyTestCase`assertEqual(len game.pyramidDeck(7), 7);
+		MyTestCase`assertEqual(len game.auxDeck, 0);
+		--validDeck
+		MyTestCase`assertEqual(len game.selectedCards, 0);
+		MyTestCase`assertEqual(game.score, 0);
+		MyTestCase`assertEqual(game.selected, 0);
+		MyTestCase`assertEqual(game.bonusPyramidDeck, true);
+		MyTestCase`assertEqual(game.bonusDeck, true);	
+	);
+	
+	public selectCardScn: () ==> ()
+	selectCardScn() == (
+		dcl game: Pyramid := new Pyramid();
+		-- Testa seleccionar carta
+		--MyTestCase`assertTrue(game.selectedCards(1) in game.validDeck);
+		game.selectCard(1, 7);
+		MyTestCase`assertTrue(game.selected > 0);
+		-- Testa desseleccionar carta
+		game.selectCard(1, 7);
+		MyTestCase`assertEqual(game.selected, 0);
+		-- Testa seleção inválida carta
+		--MyTestCase`assertTrue(game.pyramidDeck(1)(1) not in game.validDeck);
+		game.selectCard(1, 1);
+		MyTestCase`assertEqual(game.selected, 0);
+	);
+	
+	public getAuxCardScn: () ==> ()
+	getAuxCardScn() == (
+		dcl game: Pyramid := new Pyramid();
+		MyTestCase`assertEqual(len game.auxDeck, 0);
+		MyTestCase`assertEqual(len game.deck, 24);
+		game.getAuxCard();
+		MyTestCase`assertEqual(len game.auxDeck, 1);
+		MyTestCase`assertEqual(len game.deck, 23);
+		game.getAuxCard();
+		MyTestCase`assertEqual(len game.auxDeck, 2);
+		MyTestCase`assertEqual(len game.deck, 22);
+	);
+	
+	public getScoreScn: () ==> ()
+	getScoreScn() == (
+		dcl game: Pyramid := new Pyramid();
+		game.deck := [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
+		game.pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
+		game.updateValidDeck();
+		game.selectCard(6, 7);
+		game.selectCard(7, 7);
+		game.selectCard(2, 7);
+		MyTestCase`assertEqual(game.score, 40);
+		MyTestCase`assertEqual(game.selected, 0);
+	);	  
+  
+end TestPyramidGame 
