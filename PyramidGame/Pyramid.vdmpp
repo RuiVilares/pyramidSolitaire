@@ -7,8 +7,6 @@ types
 	public NaturalsNums = seq of nat;
 	public NaturalsNumsDiff0 = seq of nat1;
 
-values
--- TODO Define values here
 instance variables
 	public deck: seq of CardNumber := [];
 	public static pyramidDeck: seq of seq of CardNumber := [];
@@ -73,24 +71,24 @@ public continueGame: () ==> bool
 );
 
  -- Cria deck inicial
-public createDeck() ==
-(
-	deck := [ i | i in set {1, ..., 52}];
-)
+public createDeck: () ==> ()
+	createDeck() ==
+	(
+		deck := [ i | i in set {1, ..., 52}];
+	)
 post len deck = 52;
 
 -- Cria a Piramide de Cartas
-public createPyramidDeck() == (	
-IO`print(len pyramidDeck);
-	for counter = 0 to 6 do (
-		dcl aux : NaturalsNumsDiff0 := [];
-		for counter2 = 0 to counter do (
-			dcl value: nat1 := getCard(deck);
-				aux := [value] ^ aux;							
+public createPyramidDeck: () ==> ()	
+	createPyramidDeck() == (
+		for counter = 0 to 6 do (
+			dcl aux : NaturalsNumsDiff0 := [];
+			for counter2 = 0 to counter do (
+				dcl value: nat1 := getCard(deck);
+					aux := [value] ^ aux;							
+			);
+			pyramidDeck := pyramidDeck ^ [aux];
 		);
-		pyramidDeck := pyramidDeck ^ [aux];
-	);
-	IO`print(len pyramidDeck);
 	)
 pre len pyramidDeck = 0
 post len pyramidDeck = 7;
@@ -126,13 +124,13 @@ public checkValidCard: nat1 * nat1 ==> bool
 	);
 
 -- Retira carta para baralho auxiliar
-public getAuxCard() ==
-(	
-	dcl value: nat1 := getCard(deck);
-	auxDeck := [value] ^ auxDeck;
-	updateValidDeck();
-	-- Mostra carta
-	Utils`printStatus();
+public getAuxCard: () ==> ()
+	getAuxCard() == (	
+		dcl value: nat1 := getCard(deck);
+		auxDeck := [value] ^ auxDeck;
+		updateValidDeck();
+		-- Mostra carta
+		Utils`printStatus();
 	)
 pre len deck > 0
 post len auxDeck > len auxDeck~;
@@ -254,7 +252,5 @@ public SumSet: set of nat -> nat
 					in
 						getPoints(e) + SumSet(s\{e})
 	);
-	
-traces
--- TODO Define Combinatorial Test Traces here
+
 end Pyramid

@@ -42,7 +42,8 @@ public static printAuxCards: () ==> ()
 	);
 
 -- Imprime cartas selecionadas
-public static printSelectedCards() == (
+public static printSelectedCards: () ==> ()
+	printSelectedCards() == (
 		IO`print("\nSelected Cards: ");
 		if len Pyramid`selectedCards = 0
 			then IO`print("-")
@@ -55,22 +56,29 @@ public static printSelectedCards() == (
 	);
 	
 -- Imprime score
-public static printScore() == (
-	IO`printf("\nScore: %s\n", [Pyramid`score]);
+public static printScore: () ==> ()
+	printScore() == (
+		IO`print("\nScore: ");
+		IO`print(Pyramid`score);
+		--IO`printf("\nScore: %s\n", [Pyramid`score]);
 );
 
 -- Imprime selected
-public static printSelected() == (
-	IO`printf("Selected: %s", [Pyramid`selected]);
+public static printSelected: () ==> ()
+	printSelected() == (
+		IO`print("\nSelected: ");
+		IO`print(Pyramid`selected);
+		--IO`printf("Selected: %s", [Pyramid`selected]);
 );
 
 -- Imprime Status
-public static printStatus() == (
-	printScore();
-	printSelected();
-	printSelectedCards();
-	printPyramid();
-	printAuxCards();
+public static printStatus: () ==> ()
+	printStatus() == (
+		printScore();
+		printSelected();
+		printSelectedCards();
+		printPyramid();
+		printAuxCards();
 );
 
 -- Conversões para visualização
