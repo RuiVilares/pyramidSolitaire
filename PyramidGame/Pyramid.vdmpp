@@ -169,12 +169,24 @@ public combo: () ==> nat
 -- Pontos bónus
 public bonus: () ==> nat
 	bonus() == (
-		if (bonusPyramidDeck and len pyramidDeck = 0)
+		if (bonusPyramidDeck and checkBonusPyramidDeck())
 			then (bonusPyramidDeck := false; return 50;) 
 		else if (bonusDeck and len deck = 0 and len auxDeck = 0)
 			then (bonusDeck := false; return 30;) 
 		else
 			 return 0
+);
+
+-- Verifica se a piramide está vazia
+public checkBonusPyramidDeck: () ==> bool
+	checkBonusPyramidDeck() == (
+		for i = 2 to 7 do (
+			for j = 1 to i do (
+				if (pyramidDeck(i)(j) <> 0)
+					then return false;
+			);
+		);
+		return true;
 );
 
 -- Calcula score
