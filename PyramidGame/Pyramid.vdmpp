@@ -129,6 +129,7 @@ public getAuxCard: () ==> ()
 		dcl value: nat1 := getCard(deck);
 		auxDeck := [value] ^ auxDeck;
 		updateValidDeck();
+		if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return );
 		-- Mostra carta
 		Utils`printStatus();
 	)
@@ -139,7 +140,7 @@ post len auxDeck > len auxDeck~;
 public selectedCard: nat * nat1 ==> bool
 	selectedCard(i, j) == (
 		for all value in set validDeck do ( 
-			if i = 0 and auxDeck(j) = value or i <> 0 and pyramidDeck(i)(j) = value
+			if (i = 0 and auxDeck(j) = value) or (i <> 0 and pyramidDeck(i)(j) = value)
 				then (selected := selected + Utils`cardToPoints(value);
 							selectedCards:= [[i,j]] ^ selectedCards;					
 							return true;)
@@ -151,7 +152,7 @@ public selectedCard: nat * nat1 ==> bool
 public updateGame: () ==> bool
 	updateGame() == (
 		if selected = 13
-			then (calcScore(); removeSelectedCards(); selectedCards := []; selected := 0; return true;)
+			then (removeSelectedCards(); calcScore(); selectedCards := []; selected := 0; return true;)
 		else if selected > 13
 			then (selectedCards := []; selected := 0; return true;) 
 		else return false;  
@@ -169,24 +170,12 @@ public combo: () ==> nat
 -- Pontos bónus
 public bonus: () ==> nat
 	bonus() == (
-		if (bonusPyramidDeck and checkBonusPyramidDeck())
+		if (bonusPyramidDeck and (pyramidDeck(1)(1) = 0))
 			then (bonusPyramidDeck := false; return 50;) 
 		else if (bonusDeck and len deck = 0 and len auxDeck = 0)
 			then (bonusDeck := false; return 30;) 
 		else
 			 return 0
-);
-
--- Verifica se a piramide está vazia
-public checkBonusPyramidDeck: () ==> bool
-	checkBonusPyramidDeck() == (
-		for i = 2 to 7 do (
-			for j = 1 to i do (
-				if (pyramidDeck(i)(j) <> 0)
-					then return false;
-			);
-		);
-		return true;
 );
 
 -- Calcula score
@@ -198,7 +187,7 @@ public calcScore: () ==> ()
 -- Verifica se jogo termina
 public isFinished: () ==> bool
 	isFinished() == (
-		if len pyramidDeck = 0 and len auxDeck = 0
+		if not bonusPyramidDeck and not bonusDeck
 			then return true
 		else
 			return false;
