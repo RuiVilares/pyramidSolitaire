@@ -20,7 +20,8 @@ operations
 		-- Cartas do baralho auxiliar
 		MyTestCase`assertEqual(0, len game.auxDeck);
 		
-		--validDeck
+		--Cartas diponiveis para jogar
+		MyTestCase`assertEqual(7, card game.validDeck);
 		
 		-- Cartas selecionadas
 		MyTestCase`assertEqual(0, len game.selectedCards);
@@ -37,21 +38,12 @@ operations
 	public selectCardScn: () ==> ()
 	selectCardScn() == (
 		-- Testa seleccionar carta
-		
-		--MyTestCase`assertTrue(game.selectedCards(1) in game.validDeck);
-		
 		game.selectCard(1, 7);
 		MyTestCase`assertTrue(game.selected > 0);
 		-- Testa desseleccionar carta
 		game.selectCard(1, 7);
 		MyTestCase`assertEqual(game.selected, 0);
-		
-		--MyTestCase`assertTrue(game.selectedCards(1) in game.validDeck);
-		
 		-- Testa seleção inválida carta
-		
-		--MyTestCase`assertTrue(game.pyramidDeck(1)(1) not in game.validDeck);
-		
 		game.selectCard(1, 1);
 		MyTestCase`assertEqual(0, game.selected);
 	);
@@ -65,10 +57,12 @@ operations
 		game.getAuxCard();
 		MyTestCase`assertEqual(1, len game.auxDeck);
 		MyTestCase`assertEqual(23, len game.deck);
+		MyTestCase`assertEqual(8, card game.validDeck);
 		game.getAuxCard();
 		-- Pede outra carta
 		MyTestCase`assertEqual(2, len game.auxDeck);
 		MyTestCase`assertEqual(22, len game.deck);
+		MyTestCase`assertEqual(9, card game.validDeck);
 	);
 	
 	public scoreScn: () ==> ()
@@ -147,27 +141,31 @@ operations
 	
 	public noPossiblePlaysScn: () ==> ()
 	noPossiblePlaysScn() == (
-		game.deck := [1];
+		game.deck := [];
 		game.pyramidDeck := [[11], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
 		game.bonusPyramidDeck := true;
+		game.score := 0;
+		game.selected := 0;
+		game.selectedCards := [];
+		game.auxDeck := [];
 		game.updateValidDeck();
-		game.selectCard(1, 1);
-		game.getAuxCard();
 		
-		-- Faltam testes
+		MyTestCase`assertEqual(false, game.continueGame());
+		MyTestCase`assertEqual(false, game.isFinished());
 		
 	);
 	
 	public winnerScn: () ==> ()
 	winnerScn() == (
 		game.deck := [];
-		game.pyramidDeck := [[13], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
+		game.pyramidDeck := [[0], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
 		game.updateValidDeck();
 		game.selectCard(1, 1);
+		game.bonusDeck := false;
+		game.bonusPyramidDeck := false;
 		
-		-- Diz que perdeste, mas ganhaste
-		
-		-- Faltam testes
+		MyTestCase`assertEqual(false, game.continueGame());
+		MyTestCase`assertEqual(true, game.isFinished());
 		
 	);
 	

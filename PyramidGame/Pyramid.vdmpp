@@ -57,7 +57,7 @@ public continueGame: () ==> bool
 		dcl setValidDeck: set of CardNumber:= validDeck;
 		
 		if isFinished()
-			then (IO`print("Parabéns! Ganhaste o jogo! O teu score é "); IO`print(score); return true);
+			then (IO`print("Parabéns! Ganhaste o jogo! O teu score é "); IO`print(score); return false);
 		if len deck > 0
 			then return true;
 			
