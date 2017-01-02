@@ -4,95 +4,121 @@ operations
 	public newPyramidScn: () ==> ()
 	newPyramidScn() == (
 		dcl game: Pyramid := new Pyramid();
-		MyTestCase`assertEqual(len game.deck, 24);
-		MyTestCase`assertEqual(len game.pyramidDeck, 7);
-		MyTestCase`assertEqual(len game.pyramidDeck(1), 1); 
-		MyTestCase`assertEqual(len game.pyramidDeck(2), 2); 
-		MyTestCase`assertEqual(len game.pyramidDeck(3), 3); 
-		MyTestCase`assertEqual(len game.pyramidDeck(4), 4); 
-		MyTestCase`assertEqual(len game.pyramidDeck(5), 5); 
-		MyTestCase`assertEqual(len game.pyramidDeck(6), 6); 
-		MyTestCase`assertEqual(len game.pyramidDeck(7), 7);
-		MyTestCase`assertEqual(len game.auxDeck, 0);
+		-- Teste sobre a pirâmide
+		MyTestCase`assertEqual(7, len game.pyramidDeck);
+		MyTestCase`assertEqual(1, len game.pyramidDeck(1)); 
+		MyTestCase`assertEqual(2, len game.pyramidDeck(2)); 
+		MyTestCase`assertEqual(3, len game.pyramidDeck(3)); 
+		MyTestCase`assertEqual(4, len game.pyramidDeck(4)); 
+		MyTestCase`assertEqual(5, len game.pyramidDeck(5)); 
+		MyTestCase`assertEqual(6, len game.pyramidDeck(6)); 
+		MyTestCase`assertEqual(7, len game.pyramidDeck(7));
+		-- Cartas que sobram depois de criar a pirâmide
+		MyTestCase`assertEqual(24, len game.deck);
+		-- Cartas do baralho auxiliar
+		MyTestCase`assertEqual(0, len game.auxDeck);
+		
 		--validDeck
-		MyTestCase`assertEqual(len game.selectedCards, 0);
-		MyTestCase`assertEqual(game.score, 0);
-		MyTestCase`assertEqual(game.selected, 0);
-		MyTestCase`assertEqual(game.bonusPyramidDeck, true);
-		MyTestCase`assertEqual(game.bonusDeck, true);	
+		
+		-- Cartas selecionadas
+		MyTestCase`assertEqual(0, len game.selectedCards);
+		-- Score atual
+		MyTestCase`assertEqual(0, game.score);
+		-- Pontos das cartas selecionadas
+		MyTestCase`assertEqual(0, game.selected);
+		-- Bonus de limpar a pirâmide
+		MyTestCase`assertEqual(true, game.bonusPyramidDeck);
+		-- Bonus de limpar o baralho
+		MyTestCase`assertEqual(true, game.bonusDeck);	
 	);
 	
 	public selectCardScn: () ==> ()
 	selectCardScn() == (
 		dcl game: Pyramid := new Pyramid();
 		-- Testa seleccionar carta
+		
 		--MyTestCase`assertTrue(game.selectedCards(1) in game.validDeck);
+		
 		game.selectCard(1, 7);
 		MyTestCase`assertTrue(game.selected > 0);
 		-- Testa desseleccionar carta
 		game.selectCard(1, 7);
 		MyTestCase`assertEqual(game.selected, 0);
+		
+		--MyTestCase`assertTrue(game.selectedCards(1) in game.validDeck);
+		
 		-- Testa seleção inválida carta
+		
 		--MyTestCase`assertTrue(game.pyramidDeck(1)(1) not in game.validDeck);
+		
 		game.selectCard(1, 1);
-		MyTestCase`assertEqual(game.selected, 0);
+		MyTestCase`assertEqual(0, game.selected);
 	);
 	
 	public getAuxCardScn: () ==> ()
 	getAuxCardScn() == (
 		dcl game: Pyramid := new Pyramid();
-		MyTestCase`assertEqual(len game.auxDeck, 0);
-		MyTestCase`assertEqual(len game.deck, 24);
+		-- Cenário antes de pedir a carta
+		MyTestCase`assertEqual(0, len game.auxDeck);
+		MyTestCase`assertEqual(24, len game.deck);
+		-- Pede carta
 		game.getAuxCard();
-		MyTestCase`assertEqual(len game.auxDeck, 1);
-		MyTestCase`assertEqual(len game.deck, 23);
+		MyTestCase`assertEqual(1, len game.auxDeck);
+		MyTestCase`assertEqual(23, len game.deck);
 		game.getAuxCard();
-		MyTestCase`assertEqual(len game.auxDeck, 2);
-		MyTestCase`assertEqual(len game.deck, 22);
+		-- Pede outra carta
+		MyTestCase`assertEqual(2, len game.auxDeck);
+		MyTestCase`assertEqual(22, len game.deck);
 	);
 	
 	public scoreScn: () ==> ()
 	scoreScn() == (
 		dcl game: Pyramid := new Pyramid();
+		-- Cenário inicial
 		game.deck := [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
 		game.pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
 		game.updateValidDeck();
+		-- Testa pontuação 
 		game.selectCard(5, 7);
-		MyTestCase`assertEqual(game.score, 10);
-		MyTestCase`assertEqual(game.selected, 0);
-		MyTestCase`assertEqual(game.pyramidDeck(7)(5), 0);
+		MyTestCase`assertEqual(10, game.score);
+		MyTestCase`assertEqual(0, game.selected);
+		MyTestCase`assertEqual(0, game.pyramidDeck(7)(5));
 	);	 
 	
 	public comboScn: () ==> ()
 	comboScn() == (
 		dcl game: Pyramid := new Pyramid();
+		-- Cenário inicial
 		game.deck := [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
 		game.pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
 		game.updateValidDeck();
+		-- Testa score com multiplas cartas
 		game.selectCard(6, 7);
-		MyTestCase`assertEqual(game.selected, 1);
+		MyTestCase`assertEqual(1, game.selected);
 		game.selectCard(7, 7);
-		MyTestCase`assertEqual(game.selected, 3);
+		MyTestCase`assertEqual(3, game.selected);
 		game.selectCard(2, 7);
-		MyTestCase`assertEqual(game.score, 40);
-		MyTestCase`assertEqual(game.selected, 0);
-		MyTestCase`assertEqual(game.pyramidDeck(7)(6), 0);
-		MyTestCase`assertEqual(game.pyramidDeck(7)(7), 0);
-		MyTestCase`assertEqual(game.pyramidDeck(7)(2), 0);
+		MyTestCase`assertEqual(40, game.score);
+		MyTestCase`assertEqual(0, game.selected);
+		MyTestCase`assertEqual(0, game.pyramidDeck(7)(6));
+		MyTestCase`assertEqual(0, game.pyramidDeck(7)(7));
+		MyTestCase`assertEqual(0, game.pyramidDeck(7)(2));
 	); 
 	
 	public bonusDeckScn: () ==> ()
 	bonusDeckScn() == (
 		dcl game: Pyramid := new Pyramid();
+		-- Cenário inicial
 		game.deck := [];
 		game.pyramidDeck := [[1], [2, 3], [4, 5, 6], [7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20, 21], [22, 23, 24, 25, 26, 27, 28]];
 		game.updateValidDeck();
+		-- Testa bónus de terminal baralho
 		game.selectCard(5, 7);
-		MyTestCase`assertEqual(game.score, 40);
-		MyTestCase`assertEqual(game.selected, 0);
-		MyTestCase`assertEqual(game.pyramidDeck(7)(5), 0);
-		MyTestCase`assertEqual(len game.deck, 0);
-		MyTestCase`assertEqual(game.bonusDeck, false);
+		MyTestCase`assertEqual(40, game.score);
+		MyTestCase`assertEqual(0, game.selected);
+		MyTestCase`assertEqual(0, game.pyramidDeck(7)(5));
+		MyTestCase`assertEqual(0, len game.deck);
+		MyTestCase`assertEqual(false, game.bonusDeck);
 	); 
 	
 	public bonusPyramidDeckScn: () ==> ()
@@ -101,21 +127,39 @@ operations
 		game.deck := [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
 		game.pyramidDeck := [[13], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
 		game.updateValidDeck();
+		-- Testa bónus de terminal pirâmide
 		game.selectCard(1, 1);
-		MyTestCase`assertEqual(game.score, 60);
-		MyTestCase`assertEqual(game.selected, 0);
-		MyTestCase`assertEqual(game.pyramidDeck(1)(1), 0);
-		MyTestCase`assertEqual(game.bonusPyramidDeck, false);
+		MyTestCase`assertEqual(60, game.score);
+		MyTestCase`assertEqual(0, game.selected);
+		MyTestCase`assertEqual(0, game.pyramidDeck(1)(1));
+		MyTestCase`assertEqual(false, game.bonusPyramidDeck);
 	);
 	
 	public noPossiblePlaysScn: () ==> ()
 	noPossiblePlaysScn() == (
 		dcl game: Pyramid := new Pyramid();
-		game.deck := [];
+		game.deck := [1];
 		game.pyramidDeck := [[11], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
 		game.updateValidDeck();
 		game.selectCard(1, 1);
 		game.getAuxCard();
+		
+		-- Faltam testes
+		
+	);
+	
+	public winnerScn: () ==> ()
+	winnerScn() == (
+		dcl game: Pyramid := new Pyramid();
+		game.deck := [];
+		game.pyramidDeck := [[13], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
+		game.updateValidDeck();
+		game.selectCard(1, 1);
+		
+		-- Diz que perdeste, mas ganhaste
+		
+		-- Faltam testes
+		
 	);
   
 end TestPyramidGame 
