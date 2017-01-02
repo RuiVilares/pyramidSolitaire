@@ -160,7 +160,6 @@ operations
 		game.deck := [];
 		game.pyramidDeck := [[0], [0, 0], [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
 		game.updateValidDeck();
-		game.selectCard(1, 1);
 		game.bonusDeck := false;
 		game.bonusPyramidDeck := false;
 		
@@ -168,6 +167,26 @@ operations
 		MyTestCase`assertEqual(true, game.isFinished());
 		
 	);
+	
+	public invalidScn: () ==> ()
+	invalidScn() == (
+		game.selectCard(1, 0);
+		game.createPyramidDeck();
+		game.getAuxCard();
+	);
+	
+	/* EM FALTA
+	checkValidCard(1,1)
+	selectedCard da auxiliar
+	updateGame > 13
+	get points return 13
+	removeSelectedCards
+	deselectCard
+	game.getCard();
+	game.getAuxCard();
+	Conversão num to FIG
+	Min
+	*/
 	
 	public main: () ==> ()
 	main() == (
@@ -180,6 +199,7 @@ operations
 		bonusPyramidDeckScn();
 		noPossiblePlaysScn();
 		winnerScn();
+		--invalidScn();
 	);
   
 end TestPyramidGame 
