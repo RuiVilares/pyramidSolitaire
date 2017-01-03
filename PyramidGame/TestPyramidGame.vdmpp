@@ -4,6 +4,7 @@ instance variables
 	public game: Pyramid := new Pyramid();
 
 operations
+	-- Testa o inicio do jogo
 	public newPyramidScn: () ==> ()
 	newPyramidScn() == (
 		-- Teste sobre a pirâmide
@@ -19,10 +20,8 @@ operations
 		MyTestCase`assertEqual(24, len game.deck);
 		-- Cartas do baralho auxiliar
 		MyTestCase`assertEqual(0, len game.auxDeck);
-		
 		--Cartas diponiveis para jogar
 		MyTestCase`assertEqual(7, card game.validDeck);
-		
 		-- Cartas selecionadas
 		MyTestCase`assertEqual(0, len game.selectedCards);
 		-- Score atual
@@ -35,6 +34,7 @@ operations
 		MyTestCase`assertEqual(true, game.bonusDeck);	
 	);
 	
+	-- Testa selecção de cartas 
 	public selectCardScn: () ==> ()
 	selectCardScn() == (
 		-- Testa seleccionar carta
@@ -48,6 +48,7 @@ operations
 		MyTestCase`assertEqual(0, game.selected);
 	);
 	
+	-- Testa pedir cartas auxiliares
 	public getAuxCardScn: () ==> ()
 	getAuxCardScn() == (
 		-- Cenário antes de pedir a carta
@@ -65,6 +66,7 @@ operations
 		MyTestCase`assertEqual(9, card game.validDeck);
 	);
 	
+	-- Testa o calculo do score
 	public scoreScn: () ==> ()
 	scoreScn() == (
 		-- Cenário inicial
@@ -82,6 +84,7 @@ operations
 		MyTestCase`assertEqual(0, game.pyramidDeck(7)(5));
 	);	 
 	
+	-- Testa o calculo do score com multiplas cartas selecionadas
 	public comboScn: () ==> ()
 	comboScn() == (
 		-- Cenário inicial
@@ -104,6 +107,7 @@ operations
 		MyTestCase`assertEqual(0, game.pyramidDeck(7)(2));
 	); 
 	
+	-- Testa o calculo do score com bonus de terminar o baralho
 	public bonusDeckScn: () ==> ()
 	bonusDeckScn() == (
 		-- Cenário inicial
@@ -122,6 +126,7 @@ operations
 		MyTestCase`assertEqual(false, game.bonusDeck);
 	); 
 	
+	-- Testa o calculo do score com bonus de terminar a piramide
 	public bonusPyramidDeckScn: () ==> ()
 	bonusPyramidDeckScn() == (
 		game.score := 0;
@@ -139,6 +144,7 @@ operations
 		MyTestCase`assertEqual(false, game.bonusPyramidDeck);
 	);
 	
+	-- Testa cenário em que o jogador perde por falta de jogadas possíveis
 	public noPossiblePlaysScn: () ==> ()
 	noPossiblePlaysScn() == (
 		game.deck := [];
@@ -155,6 +161,7 @@ operations
 		
 	);
 	
+	-- Testa cenário de vitória
 	public winnerScn: () ==> ()
 	winnerScn() == (
 		game.deck := [];
@@ -168,25 +175,117 @@ operations
 		
 	);
 	
-	public invalidScn: () ==> ()
-	invalidScn() == (
-		game.selectCard(1, 0);
-		game.createPyramidDeck();
-		game.getAuxCard();
+	public conversionTests: () ==> ()
+	conversionTests() == (
+		MyTestCase`assertEqual("As", Utils`convertNumberToSuit(1));
+		MyTestCase`assertEqual(1, Utils`cardToPoints(1));
+		MyTestCase`assertEqual("2s", Utils`convertNumberToSuit(2));
+		MyTestCase`assertEqual(2, Utils`cardToPoints(2));
+		MyTestCase`assertEqual("3s", Utils`convertNumberToSuit(3));
+		MyTestCase`assertEqual(3, Utils`cardToPoints(3));
+		MyTestCase`assertEqual("4s", Utils`convertNumberToSuit(4));
+		MyTestCase`assertEqual(4, Utils`cardToPoints(4));
+		MyTestCase`assertEqual("5s", Utils`convertNumberToSuit(5));
+		MyTestCase`assertEqual(5, Utils`cardToPoints(5));
+		MyTestCase`assertEqual("6s", Utils`convertNumberToSuit(6));
+		MyTestCase`assertEqual(6, Utils`cardToPoints(6));
+		MyTestCase`assertEqual("7s", Utils`convertNumberToSuit(7));
+		MyTestCase`assertEqual(7, Utils`cardToPoints(7));
+		MyTestCase`assertEqual("8s", Utils`convertNumberToSuit(8));
+		MyTestCase`assertEqual(8, Utils`cardToPoints(8));
+		MyTestCase`assertEqual("9s", Utils`convertNumberToSuit(9));
+		MyTestCase`assertEqual(9, Utils`cardToPoints(9));
+		MyTestCase`assertEqual("10s", Utils`convertNumberToSuit(10));
+		MyTestCase`assertEqual(10, Utils`cardToPoints(10));
+		MyTestCase`assertEqual("Js", Utils`convertNumberToSuit(11));
+		MyTestCase`assertEqual(11, Utils`cardToPoints(11));
+		MyTestCase`assertEqual("Qs", Utils`convertNumberToSuit(12));
+		MyTestCase`assertEqual(12, Utils`cardToPoints(12));
+		MyTestCase`assertEqual("Ks", Utils`convertNumberToSuit(13));
+		MyTestCase`assertEqual(13, Utils`cardToPoints(13));
+		
+		MyTestCase`assertEqual("Ah", Utils`convertNumberToSuit(14));
+		MyTestCase`assertEqual(1, Utils`cardToPoints(14));
+		MyTestCase`assertEqual("2h", Utils`convertNumberToSuit(15));
+		MyTestCase`assertEqual(2, Utils`cardToPoints(15));
+		MyTestCase`assertEqual("3h", Utils`convertNumberToSuit(16));
+		MyTestCase`assertEqual(3, Utils`cardToPoints(16));
+		MyTestCase`assertEqual("4h", Utils`convertNumberToSuit(17));
+		MyTestCase`assertEqual(4, Utils`cardToPoints(17));
+		MyTestCase`assertEqual("5h", Utils`convertNumberToSuit(18));
+		MyTestCase`assertEqual(5, Utils`cardToPoints(18));
+		MyTestCase`assertEqual("6h", Utils`convertNumberToSuit(19));
+		MyTestCase`assertEqual(6, Utils`cardToPoints(19));
+		MyTestCase`assertEqual("7h", Utils`convertNumberToSuit(20));
+		MyTestCase`assertEqual(7, Utils`cardToPoints(20));
+		MyTestCase`assertEqual("8h", Utils`convertNumberToSuit(21));
+		MyTestCase`assertEqual(8, Utils`cardToPoints(21));
+		MyTestCase`assertEqual("9h", Utils`convertNumberToSuit(22));
+		MyTestCase`assertEqual(9, Utils`cardToPoints(22));
+		MyTestCase`assertEqual("10h", Utils`convertNumberToSuit(23));
+		MyTestCase`assertEqual(10, Utils`cardToPoints(23));
+		MyTestCase`assertEqual("Jh", Utils`convertNumberToSuit(24));
+		MyTestCase`assertEqual(11, Utils`cardToPoints(24));
+		MyTestCase`assertEqual("Qh", Utils`convertNumberToSuit(25));
+		MyTestCase`assertEqual(12, Utils`cardToPoints(25));
+		MyTestCase`assertEqual("Kh", Utils`convertNumberToSuit(26));
+		MyTestCase`assertEqual(13, Utils`cardToPoints(26));
+		
+		MyTestCase`assertEqual("Ad", Utils`convertNumberToSuit(27));
+		MyTestCase`assertEqual(1, Utils`cardToPoints(27));
+		MyTestCase`assertEqual("2d", Utils`convertNumberToSuit(28));
+		MyTestCase`assertEqual(2, Utils`cardToPoints(28));
+		MyTestCase`assertEqual("3d", Utils`convertNumberToSuit(29));
+		MyTestCase`assertEqual(3, Utils`cardToPoints(29));
+		MyTestCase`assertEqual("4d", Utils`convertNumberToSuit(30));
+		MyTestCase`assertEqual(4, Utils`cardToPoints(30));
+		MyTestCase`assertEqual("5d", Utils`convertNumberToSuit(31));
+		MyTestCase`assertEqual(5, Utils`cardToPoints(31));
+		MyTestCase`assertEqual("6d", Utils`convertNumberToSuit(32));
+		MyTestCase`assertEqual(6, Utils`cardToPoints(32));
+		MyTestCase`assertEqual("7d", Utils`convertNumberToSuit(33));
+		MyTestCase`assertEqual(7, Utils`cardToPoints(33));
+		MyTestCase`assertEqual("8d", Utils`convertNumberToSuit(34));
+		MyTestCase`assertEqual(8, Utils`cardToPoints(34));
+		MyTestCase`assertEqual("9d", Utils`convertNumberToSuit(35));
+		MyTestCase`assertEqual(9, Utils`cardToPoints(35));
+		MyTestCase`assertEqual("10d", Utils`convertNumberToSuit(36));
+		MyTestCase`assertEqual(10, Utils`cardToPoints(36));
+		MyTestCase`assertEqual("Jd", Utils`convertNumberToSuit(37));
+		MyTestCase`assertEqual(11, Utils`cardToPoints(37));
+		MyTestCase`assertEqual("Qd", Utils`convertNumberToSuit(38));
+		MyTestCase`assertEqual(12, Utils`cardToPoints(38));
+		MyTestCase`assertEqual("Kd", Utils`convertNumberToSuit(39));
+		MyTestCase`assertEqual(13, Utils`cardToPoints(39));
+		
+		MyTestCase`assertEqual("Ac", Utils`convertNumberToSuit(40));
+		MyTestCase`assertEqual(1, Utils`cardToPoints(40));
+		MyTestCase`assertEqual("2c", Utils`convertNumberToSuit(41));
+		MyTestCase`assertEqual(2, Utils`cardToPoints(41));
+		MyTestCase`assertEqual("3c", Utils`convertNumberToSuit(42));
+		MyTestCase`assertEqual(3, Utils`cardToPoints(42));
+		MyTestCase`assertEqual("4c", Utils`convertNumberToSuit(43));
+		MyTestCase`assertEqual(4, Utils`cardToPoints(43));
+		MyTestCase`assertEqual("5c", Utils`convertNumberToSuit(44));
+		MyTestCase`assertEqual(5, Utils`cardToPoints(44));
+		MyTestCase`assertEqual("6c", Utils`convertNumberToSuit(45));
+		MyTestCase`assertEqual(6, Utils`cardToPoints(45));
+		MyTestCase`assertEqual("7c", Utils`convertNumberToSuit(46));
+		MyTestCase`assertEqual(7, Utils`cardToPoints(46));
+		MyTestCase`assertEqual("8c", Utils`convertNumberToSuit(47));
+		MyTestCase`assertEqual(8, Utils`cardToPoints(47));
+		MyTestCase`assertEqual("9c", Utils`convertNumberToSuit(48));
+		MyTestCase`assertEqual(9, Utils`cardToPoints(48));
+		MyTestCase`assertEqual("10c", Utils`convertNumberToSuit(49));
+		MyTestCase`assertEqual(10, Utils`cardToPoints(49));
+		MyTestCase`assertEqual("Jc", Utils`convertNumberToSuit(50));
+		MyTestCase`assertEqual(11, Utils`cardToPoints(50));
+		MyTestCase`assertEqual("Qc", Utils`convertNumberToSuit(51));
+		MyTestCase`assertEqual(12, Utils`cardToPoints(51));
+		MyTestCase`assertEqual("Kc", Utils`convertNumberToSuit(52));
+		MyTestCase`assertEqual(13, Utils`cardToPoints(52));
 	);
-	
-	/* EM FALTA
-	checkValidCard(1,1)
-	selectedCard da auxiliar
-	updateGame > 13
-	get points return 13
-	removeSelectedCards
-	deselectCard
-	game.getCard();
-	game.getAuxCard();
-	Conversão num to FIG
-	Min
-	*/
+
 	
 	public main: () ==> ()
 	main() == (
@@ -199,7 +298,7 @@ operations
 		bonusPyramidDeckScn();
 		noPossiblePlaysScn();
 		winnerScn();
-		--invalidScn();
+		conversionTests();
 	);
   
 end TestPyramidGame 
