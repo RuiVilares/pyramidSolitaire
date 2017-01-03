@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+import org.overture.codegen.runtime.Utils;
+import org.overture.codegen.runtime.VDMSeq;
+
 public class Game {
 
 	public static boolean validOption = false;
@@ -43,6 +46,7 @@ public class Game {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private static void play() throws IOException {
 		
 		Pyramid pyramid = new Pyramid();
@@ -71,8 +75,11 @@ public class Game {
 					pyramid.getAuxCard();
 				else {
 					System.out.print("Selecionar coord <Y>: ");
-					int y = Integer.parseInt(buffer.readLine());					
-					pyramid.selectCard(x, y);
+					int y = Integer.parseInt(buffer.readLine());
+					if(checkValues(x,y))
+						pyramid.selectCard(x, y);
+					else
+						System.out.println("\n- Valores incorretos. Tente novamente.");
 				}	
 			 }
 			catch (NumberFormatException ex) {
@@ -91,6 +98,18 @@ public class Game {
 		} catch (NumberFormatException ex) {
 		}
 		return option;
+	}
+	
+	public static boolean checkValues(int xCoord, int yCoord) {
+
+	    if (Utils.equals(yCoord, 0L) && cg_Utils.min(Pyramid.auxDeck.size(), 2L).longValue() >= xCoord) {
+	        return true;
+	    }
+	    else if (!(Utils.equals(yCoord, 0L)) && ((VDMSeq) Utils.get(Pyramid.pyramidDeck, yCoord)).size() >= xCoord) {
+	          return true;
+	     }
+	    else
+	    	return false;
 	}
 	
 	
