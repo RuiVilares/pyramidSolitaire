@@ -26,8 +26,8 @@ instance variables
 operations
 -- Construtor da pirâmide
 public Pyramid: () ==> Pyramid
-	Pyramid() == (
-		createDeck();
+	Pyramid() == 
+	(	createDeck();
 		createPyramidDeck();
 		updateValidDeck();
 		Utils`printStatus();
@@ -48,7 +48,8 @@ public selectCard: nat1 * nat ==> ()
 		if updateGame()
 			then (
 				updateValidDeck();
-				if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return ));
+				if not continueGame() 
+					then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return ));
 				
 		Utils`printStatus();
 	)	
@@ -133,6 +134,7 @@ public getAuxCard: () ==> ()
 		dcl value: nat1 := getCard(deck);
 		auxDeck := [value] ^ auxDeck;
 		updateValidDeck();
+		selectedCards := []; selected := 0;
 		if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return );
 		Utils`printStatus();
 	)
