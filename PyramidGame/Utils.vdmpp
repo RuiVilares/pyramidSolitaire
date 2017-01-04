@@ -60,7 +60,6 @@ public static printScore: () ==> ()
 	printScore() == (
 		IO`print("\nScore: ");
 		IO`print(Pyramid`score);
-		--IO`printf("\nScore: %s\n", [Pyramid`score]);
 );
 
 -- Imprime selected
@@ -68,7 +67,6 @@ public static printSelected: () ==> ()
 	printSelected() == (
 		IO`print("\nSelected: ");
 		IO`print(Pyramid`selected);
-		--IO`printf("Selected: %s", [Pyramid`selected]);
 );
 
 -- Imprime Status

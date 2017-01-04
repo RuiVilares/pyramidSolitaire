@@ -154,7 +154,7 @@ public updateGame: () ==> bool
 		if selected = 13
 			then (removeSelectedCards(); calcScore(); selectedCards := []; selected := 0; return true;)
 		else if selected > 13
-			then (selectedCards := []; selected := 0; return true;) 
+			then (selectedCards := []; selected := 0; IO`print("Excedeste os 13 pontos! Tenta novamente."); return true;) 
 		else return false;  
 	);
 
