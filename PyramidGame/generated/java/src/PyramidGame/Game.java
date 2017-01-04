@@ -41,7 +41,7 @@ public class Game {
 			return;
 
 		default:
-			System.err.println("Invalid option! Exiting...");
+			System.err.println(" - Opção inválida! Saindo...");
 			break;
 		}
 	}
@@ -52,8 +52,8 @@ public class Game {
 		Pyramid pyramid = new Pyramid();
 
 		runGame(pyramid);
-
-		System.out.println("\n\n- Primir Enter para retornar ao Menu...");
+		System.out.println("- - - - - - - - - - - - - - - - - - - - -\n");
+		System.out.println(" - Primir Enter para retornar ao Menu...");
 		new Scanner(System.in).nextLine();
 
 		startMenu();
@@ -64,11 +64,11 @@ public class Game {
 		while (!pyramid.isFinished()) {
 			try
 			 {
-				System.out.println("- Jogada");
+				System.out.println(" - Jogada:");
 				System.out.print("Primir '9' para desistir || '0' para pedir carta auxiliar || selecionar coord <X>: ");
 				int x = Integer.parseInt(buffer.readLine());
 				if (x == 9) {
-					System.out.println("Perdeste! Fim do jogo.");
+					System.out.println(" - Perdeste! Fim do jogo.");
 					return;
 				}
 				else if (x == 0)
@@ -79,11 +79,11 @@ public class Game {
 					if(checkValues(x,y))
 						pyramid.selectCard(x, y);
 					else
-						System.out.println("\n- Valores incorretos. Tente novamente.");
+						System.out.println("\n - Valores incorretos. Tente novamente.");
 				}	
 			 }
 			catch (NumberFormatException ex) {
-		       System.out.println("\n- Entrada incorreta. Tente novamente.");
+		       System.out.println("\n - Entrada incorreta. Tente novamente.");
 			}
 		}
 	}
