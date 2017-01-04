@@ -1,7 +1,7 @@
 class Pyramid
 /*
 	Classe que contêm o modelo principal do programa.
-	Constrói os baralhos, permite efetuar as jogadas (seleção de cartas) e verificar a válidade das mesmas.
+	Constrói os baralhos, permite efetuar as jogadas (seleção de cartas) e verificar a validade das mesmas.
 	Trata ainda da pontuação no jogo e da condição de término do jogo.
 */
 types

@@ -29,31 +29,32 @@ public class Pyramid {
     cg_init_Pyramid_1();
   }
 
-  public void selectCard(final Number xCoord, final Number yCoord) {
+  public int selectCard(final Number xCoord, final Number yCoord) {
 
     long toVar_1 = Pyramid.selectedCards.size();
-    System.out.println("Aqui!1");
+
     for (Long position = 1L; position <= toVar_1; position++) {
       if (Utils.equals(
           ((VDMSeq) Utils.get(selectedCards, position)), SeqUtil.seq(yCoord, xCoord))) {
         deselectCard(Utils.copy(Pyramid.selectedCards), position, yCoord, xCoord);
         cg_Utils.printStatus();
-        return;
+        return 1;
       }
-    }System.out.println("Aqui!2");
+    }
     if (!(selectedCard(yCoord, xCoord))) {
     	System.out.println(" - Seleção inválida.");
     }
-    System.out.println("Aqui!3");
-    if (updateGame()) {System.out.println("Aqui!4");
-      updateValidDeck();System.out.println("Aqui!5");
+
+    if (updateGame()) {
+      updateValidDeck();
       if (!(continueGame())) {
     	  System.out.println(" - Perdeste! O jogo terminou por falta de jogadas possíveis.");
-        return;
+        return 0;
       }
     }
 
     cg_Utils.printStatus();
+    return 1;
   }
 
   public Boolean continueGame() {
@@ -170,11 +171,11 @@ public class Pyramid {
     }
   }
 
-  public void getAuxCard() {
+  public int getAuxCard() {
 
 	if (deck.size() == 0) {
 		System.out.println(" - O baralho inicial está vazio. Não podes pedir mais cartas auxiliares.");
-	    return;
+	    return 1;
 	}
     Number value = getCard(Utils.copy(deck));
     auxDeck = SeqUtil.conc(SeqUtil.seq(value), Utils.copy(Pyramid.auxDeck));
@@ -183,10 +184,11 @@ public class Pyramid {
     selected = 0L;
     if (!(continueGame())) {
       System.out.println(" - Perdeste! O jogo terminou por falta de jogadas possíveis.");
-      return;
+      return 0;
     }
 
     cg_Utils.printStatus();
+    return 1;
   }
 
   public Boolean selectedCard(final Number i, final Number j) {
@@ -228,20 +230,20 @@ public class Pyramid {
   }
 
   public Boolean updateGame() {
-	  System.out.println("Aqui!6");
-    if (Utils.equals(Pyramid.selected, 13L)) {System.out.println("Aqui!10");
-      removeSelectedCards();System.out.println("Aqui!11");
-      calcScore();System.out.println("Aqui!12");
-      selectedCards = SeqUtil.seq();System.out.println("Aqui!13");
-      selected = 0L;System.out.println("Aqui!7");
+	  
+    if (Utils.equals(Pyramid.selected, 13L)) {
+      removeSelectedCards();
+      calcScore();
+      selectedCards = SeqUtil.seq();
+      selected = 0L;
       return true;
     } else {
       if (Pyramid.selected.longValue() > 13L) {
         selectedCards = SeqUtil.seq();
         selected = 0L;
-        System.out.println(" - Excedeste os 13 pontos! Tenta novamente.\n");System.out.println("Aqui!8");
+        System.out.println(" - Excedeste os 13 pontos! Tenta novamente.\n");
         return true;
-      } else {System.out.println("Aqui!9");
+      } else {
         return false;
       }
     }
@@ -371,21 +373,20 @@ public class Pyramid {
   }
 
   public void removeSelectedCards() {
-	  System.out.println("Aqui!14");
+	  
     long toVar_7 = Pyramid.selectedCards.size();
-    System.out.println("Aqui!15");
-    for (Long i = 1L; i <= toVar_7; i++) {System.out.println("Aqui!18 + " + Utils.get(selectedCards, i) + " + " + SeqUtil.seq(0L, 1L));
-    	if((Utils.equals( ((Number) Utils.get( ((VDMSeq) Utils.get(selectedCards, i)), 1L)), 0L)) && (Utils.equals( ((Number) Utils.get(( (VDMSeq)Utils.get(selectedCards, i)), 2L)), 1L)) ){System.out.println("Aqui!19");
-    // if (Utils.equals(((VDMSeq) Utils.get(selectedCards, i)), ((VDMSeq) SeqUtil.seq(0L, 1L)))) {System.out.println("Aqui!19");
-        auxDeck = SeqUtil.tail(Utils.copy(Pyramid.auxDeck));System.out.println("Aqui!16");
+    
+    for (Long i = 1L; i <= toVar_7; i++) {
+    	if((Utils.equals( ((Number) Utils.get( ((VDMSeq) Utils.get(selectedCards, i)), 1L)), 0L)) && (Utils.equals( ((Number) Utils.get(( (VDMSeq)Utils.get(selectedCards, i)), 2L)), 1L)) ){
+        auxDeck = SeqUtil.tail(Utils.copy(Pyramid.auxDeck));
       }
-      else {System.out.println("Aqui!20 + " + Utils.get(selectedCards, i) + " + " + SeqUtil.seq(0L, 2L));
-        if (Utils.equals(((VDMSeq) Utils.get(selectedCards, i)), ((VDMSeq) SeqUtil.seq(0L, 2L)))) {System.out.println("Aqui!17");
+      else {
+    	if((Utils.equals( ((Number) Utils.get( ((VDMSeq) Utils.get(selectedCards, i)), 1L)), 0L)) && (Utils.equals( ((Number) Utils.get(( (VDMSeq)Utils.get(selectedCards, i)), 2L)), 2L)) ){
           auxDeck =
               SeqUtil.conc(
                   SeqUtil.seq(((Number) Utils.get(auxDeck, 1L))),
                   SeqUtil.subSeq(Utils.copy(auxDeck), 3L, Pyramid.auxDeck.size()));
-        } else {System.out.println("Aqui!21");
+        } else {
           Utils.mapSeqUpdate(
               ((VDMSeq)
                   Utils.get(

@@ -29,15 +29,20 @@ public class Game {
 
 		System.out.println(" - Menu");
 		System.out.println(" 1. Jogar");
-		System.out.println(" 2. Sair");
+		System.out.println(" 2. Instruções");
+		System.out.println(" 3. Sair");
 
 		int option = insertOption();
 		switch (option) {
 		case 1:
 			play();
 			break;
-			
+		
 		case 2:
+			instructions();
+			break;
+
+		case 3:
 			return;
 
 		default:
@@ -59,6 +64,30 @@ public class Game {
 		startMenu();
 	}
 	
+	@SuppressWarnings("resource")
+	private static void instructions() throws IOException {
+		
+		System.out.println("\n - - - - - - - - Instruções - - - - - - - -");
+		System.out.println(" - Objetivo: Retirar todas as cartas da pirâmide fazendo combinações de cartas que tenham um valor combinado de 13 pontos.");
+		System.out.println(" - Como Jogar: Selecionar, em primeiro lugar, a coordenada X (eixo horizontal) e, seguidamente, a coordenada Y (eixo vertical).");
+		System.out.println(" -             É ainda possível sair do jogo primindo 9 e pedir carta auxiliar primindo 0, quando são facultadas estas opções.");
+		System.out.println(" -             As cartas válidas para serem selecionadas são as 2 primeiras do baralho auxiliar, se existirem, e toda a carta da piramide (x,y) em que as cartas (x,y+1) e (x+1, y+1) já tenham sido removidas.");
+		System.out.println(" -             O jogo termina se não existirem jogadas possivéis.");
+		System.out.println(" - Regras: Cada jogada corresponde à seleção de uma carta ou ao pedido de carta auxiliar.");
+		System.out.println(" -         A cada seleção de uma carta serão somados os pontos correspondentes às figuras de cada carta.");
+		System.out.println(" -         Atingindo os 13 pontos, as cartas selecionadas são removidas e o jogo continua.");
+		System.out.println(" -         Caso o valor de 13 pontos seja excedido, as cartas são desselecionadas e o jogo mantêm-se igual.");
+		System.out.println(" -         Podem ser pedidas cartas auxiliares até se esgotar o baralho inicial.");
+		System.out.println(" - Score: Cada carta removida incrementa em 10 pontos."); 
+		System.out.println(" -        Remover todas as cartas do baralho traduz um bonus de 30 pontos e remover todas as cartas da piramide traduz 50 pontos."); 
+		System.out.println(" -        Bonus de combinações de 3 cartas = 10 pontos, e a cada carta a somar às 3 acresce 10 pontos."); 
+		System.out.println("- - - - - - - - - - - - - - - - - - - - -\n");
+		System.out.println(" - Primir Enter para retornar ao Menu...");
+		new Scanner(System.in).nextLine();
+
+		startMenu();
+	}
+	
 	private static void runGame(Pyramid pyramid) throws IOException {
 
 		while (!pyramid.isFinished()) {
@@ -71,14 +100,17 @@ public class Game {
 					System.out.println(" - Perdeste! Fim do jogo.");
 					return;
 				}
-				else if (x == 0)
-					pyramid.getAuxCard();
+				else if (x == 0) {
+					if(pyramid.getAuxCard() == 0)
+						return;
+				}
 				else {
 					System.out.print("Selecionar coord <Y>: ");
 					int y = Integer.parseInt(buffer.readLine());
-					if(checkValues(x,y))
-						pyramid.selectCard(x, y);
-					else
+					if(checkValues(x,y)) {
+						if(pyramid.selectCard(x, y) == 0)
+							return;
+					} else
 						System.out.println("\n - Valores incorretos. Tente novamente.");
 				}	
 			 }
@@ -110,7 +142,5 @@ public class Game {
 	     }
 	    else
 	    	return false;
-	}
-	
-	
+	}	
 }
