@@ -1,8 +1,8 @@
 class Utils
-types
--- TODO Define types here
-values
--- TODO Define values here
+/*
+	Contêm operações de impressão no ecrã de todos os aspetos do jogo.
+	Contêm ainda operações auxiliares para a tradução das figuras e dos naipes das cartas.
+*/
 instance variables
 	public static cardFigLabels: seq of Pyramid`String := ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 	public static cardSuitLabels: Pyramid`String := ['s', 'h', 'd', 'c'];
@@ -128,8 +128,4 @@ pure public static min: nat * nat1 ==> nat
 		else return y;
 	);
 
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end Utils

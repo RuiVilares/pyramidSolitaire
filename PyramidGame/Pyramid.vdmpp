@@ -1,4 +1,9 @@
 class Pyramid
+/*
+	Classe que contêm o modelo principal do programa.
+	Constrói os baralhos, permite efetuar as jogadas (seleção de cartas) e verificar a válidade das mesmas.
+	Trata ainda da pontuação no jogo e da condição de término do jogo.
+*/
 types
 	public CardNumber = nat
 	   inv n == n <= 52;
@@ -8,19 +13,18 @@ types
 	public NaturalsNumsDiff0 = seq of nat1;
 
 instance variables
-	public deck: seq of CardNumber := [];
-	public static pyramidDeck: seq of seq of CardNumber := [];
-	public static auxDeck: seq of CardNumber := [];
-	public validDeck: set of CardNumber:= {};
-	public static selectedCards: seq of NaturalsNums:= [];
+	public deck: seq of CardNumber := [];	-- baralho inicial
+	public static pyramidDeck: seq of seq of CardNumber := []; -- baralho com as cartas da pirâmide
+	public static auxDeck: seq of CardNumber := []; -- baralho com as cartas auxiliares
+	public validDeck: set of CardNumber:= {}; -- baralho com as cartas que são válidas para serem selecionadas
+	public static selectedCards: seq of NaturalsNums:= []; -- conjunto de cartas selecionadas pelo jogador
 	public static score: int := 0;
 	public static selected: int := 0;
 	public bonusPyramidDeck: bool := true;
 	public bonusDeck: bool := true;
 	
-	
 operations
--- Construtor
+-- Construtor da pirâmide
 public Pyramid: () ==> Pyramid
 	Pyramid() == (
 		createDeck();
@@ -38,7 +42,7 @@ public selectCard: nat1 * nat ==> ()
 			if selectedCards(position) = [yCoord,xCoord]
 				then (deselectCard(selectedCards, position, yCoord, xCoord); Utils`printStatus(); return; )
 		);
-		-- Adiciona a carta à cartas selecionadas e incrementa o valor do selected
+		-- Adiciona a carta às cartas selecionadas e incrementa o valor do selected
 		if not selectedCard(yCoord, xCoord) then IO`print("Seleção inválida\n");
 
 		if updateGame()
@@ -50,7 +54,7 @@ public selectCard: nat1 * nat ==> ()
 	)	
 pre (yCoord = 0 and Utils`min(len auxDeck, 2) >= xCoord) or (yCoord <> 0 and len pyramidDeck(yCoord) >= xCoord);
 
--- Pesquisar se existem as condições necessárias para o jogo continuar (não terminado e com jogadas possíveis)
+-- Pesquisa se existem as condições necessárias para o jogo continuar (não terminado e com jogadas possíveis)
 public continueGame: () ==> bool
 	continueGame() == (	
 		dcl sumCombination : nat := 0;
@@ -61,7 +65,7 @@ public continueGame: () ==> bool
 		if len deck > 0
 			then return true;
 			
-		-- Combina os elementos da lista exemplo e soma cada sublista
+		-- Combina os elementos do set e soma os pontos de cada sublista
 		for all value in set power setValidDeck do ( 
 			sumCombination := SumSet(value);
 			 if sumCombination = 13
@@ -70,7 +74,7 @@ public continueGame: () ==> bool
 		return false;
 );
 
- -- Cria deck inicial
+ -- Criação do deck inicial
 public createDeck: () ==> ()
 	createDeck() ==
 	(
@@ -78,7 +82,7 @@ public createDeck: () ==> ()
 	)
 post len deck = 52;
 
--- Cria a Piramide de Cartas
+-- Criação da Piramide de Cartas
 public createPyramidDeck: () ==> ()	
 	createPyramidDeck() == (
 		for counter = 0 to 6 do (
@@ -130,7 +134,6 @@ public getAuxCard: () ==> ()
 		auxDeck := [value] ^ auxDeck;
 		updateValidDeck();
 		if not continueGame() then (IO`print("Perdeste! O jogo terminou por falta de jogadas possíveis.\n"); return );
-		-- Mostra carta
 		Utils`printStatus();
 	)
 pre len deck > 0
@@ -243,8 +246,7 @@ public removeSelectedCards: () ==> ()
 	);
 		
 functions
--- Sum Set from structure to single value
--- http://kurser.iha.dk/eit/tivdm1/Quick_Overview_of_VDM_Operators.pdf
+-- Faz o sumatório de um set
 public SumSet: set of nat -> nat
 	SumSet(s) == (
 		if s = {}

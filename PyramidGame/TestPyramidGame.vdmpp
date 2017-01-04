@@ -1,4 +1,7 @@
 class TestPyramidGame is subclass of MyTestCase
+/*
+  Contém os casos de teste para o jogo que cobrem todos os cenários de uso.
+*/
 
 instance variables
 	public game: Pyramid := new Pyramid();
@@ -286,7 +289,6 @@ operations
 		MyTestCase`assertEqual(13, Utils`cardToPoints(52));
 	);
 
-	
 	public main: () ==> ()
 	main() == (
 		newPyramidScn();
